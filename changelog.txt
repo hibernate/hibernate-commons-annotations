@@ -1,0 +1,7 @@
+Hibernate Annotations Changelog
+===============================
+
+3.0.0.GA (19-03-2007)
+---------------------
+
+Initial release as a standalone product (see Hibernate Annotations changelog for previous informations)
