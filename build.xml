@@ -1,0 +1,133 @@
+<project name="Hibernate Commons Annotations" default="dist" basedir=".">
+
+	<!-- Give user a chance to override without editing this file
+		   (and without typing -D each time it compiles it) -->
+	<property file="build.properties"/>
+	<property file="${user.home}/.ant.properties"/>
+
+	<!-- Name of project and version, used to create filenames -->
+	<property name="Name" value="Hibernate Commons Annotations"/>
+	<property name="name" value="hibernate-commons-annotations"/>
+	<property name="version" value="3.0.0.GA"/>
+	<property name="javadoc.packagenames" value="org.hibernate.commons.annotations.*"/>
+	<property name="copy.test" value="true"/>
+	<property name="javac.source" value="1.5"/>
+	<property name="javac.target" value="1.5"/>
+	<property name="common.dir" value="${basedir}/../common"/>
+	<property name="hibernate-core.jar.available" value="true"/>
+	<property name="jpa-api.jar" value="${basedir}/../jpa-api/build/ejb3-persistence.jar"/>
+
+	<import file="${common.dir}/common-build.xml"/>
+
+	<path id="lib.class.path">
+    	<fileset dir="${hibernate-core.lib.dir}">
+			<include name="commons-logging*.jar"/>
+			<include name="log4j*.jar"/>
+		</fileset>
+        <fileset dir="${lib.dir}">
+            <include name="*.jar"/>
+        </fileset>
+		<path refid="lib.moduleclass.path"/>
+		<pathelement path="${clover.jar}"/>
+    </path>
+
+	<path id="junit.moduleclasspath">
+		<pathelement location="${src.dir}"/>
+		<pathelement location="${test.dir}"/>
+		<pathelement location="${jpa-api.jar}"/>
+		<fileset dir="${hibernate-core.lib.dir}">
+			<include name="junit*.jar"/>
+		</fileset>
+	</path>
+
+	<!-- target name="report">
+			<mkdir dir="test_output"/>
+			<junitreport todir="test_output">
+			  <fileset dir="test_output">
+				<include name="TEST-*.xml"/>
+			  </fileset>
+			  <report format="frames" todir="test_output/report"/>
+			</junitreport>
+		</target -->
+
+	<target name="init" description="Initialize the build">
+		<!-- CCed from common-build to avoid failure when hibernate core is not compiled -->
+		<tstamp>
+			<format property="subversion" pattern="yyyy-MM-dd hh:mm:ss"/>
+		</tstamp>
+		<echo message="Build ${Name}-${version} (${subversion})"/>
+		<mkdir dir="${classes.dir}"/>
+		<mkdir dir="${testclasses.dir}"/>
+		<copy todir="${classes.dir}">
+			<fileset dir="${src.dir}">
+				<patternset refid="support.files"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${build.dir}">
+			<fileset dir=".">
+				<include name="readme.txt"/>
+				<include name="lgpl.txt"/>
+			</fileset>
+		</copy>
+
+		<!-- check for dependency artefacts -->
+		<available file="${jpa-api.jar}" type="file" property="jpa-api.jar.available"/>
+	</target>
+
+	<target name="compiletest" depends="get.jpa-api,compile" description="Compile the tests">
+		<available
+				classname="org.eclipse.core.launcher.Main"
+				property="build.compiler"
+				value="org.eclipse.jdt.core.JDTCompilerAdapter"
+				classpath="${java.class.path}"/>
+		<javac
+				target="${javac.target}"
+				source="${javac.source}"
+				destdir="${testclasses.dir}"
+				classpathref="junit.classpath"
+				debug="${javac.debug}"
+				optimize="${javac.optimize}"
+				nowarn="on">
+			<src refid="testsrc.path"/>
+		</javac>
+	</target>
+
+	<target name="get.jpa-api" depends="init" unless="jpa-api.jar.available">
+		<ant inheritall="false" dir="${basedir}/../jpa-api" target="clean"/>
+		<ant inheritall="false" dir="${basedir}/../jpa-api" target="jar"/>
+	</target>
+
+	<target name="jar" depends="compile" description="Build the distribution .jar file">
+		<mkdir dir="${classes.dir}/META-INF"/>
+		<manifest file="${classes.dir}/META-INF/MANIFEST.MF">
+			<attribute name="Product" value="${Name}"/>
+			<attribute name="Version" value="${version}"/>
+		</manifest>
+		<antcall target="common-build.jar"/>
+	</target>
+
+	<!-- Some of this can probably be moved to common-build... -->
+	<target name="dist" depends="jar,javadoc,copysource,copytest,copylib,extras" description="Build everything">
+
+		<copy todir="${dist.dir}" failonerror="false">
+			<fileset dir="${common.dir}">
+				<include name="common-build.xml"/>
+			</fileset>
+		</copy>
+		<copy file="${basedir}/build.properties.dist" tofile="${dist.dir}/build.properties" failonerror="false">
+		</copy>
+		<antcall target="common-build.dist"/>
+	</target>
+
+	<target name="zip-dist" description="zip the dist">
+		<zip zipfile="${dist.dir}-${version}.zip">
+			<zipfileset prefix="${name}-${version}" dir="${dist.dir}"/>
+		</zip>
+		<tar compression="gzip" tarfile="${dist.dir}-${version}.tar.gz">
+			<tarfileset prefix="${name}-${version}" dir="${dist.dir}"/>
+		</tar>
+	</target>
+
+
+</project>
