@@ -3,14 +3,11 @@ package org.hibernate.annotations.common.test.reflection.java.generics;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Entity;
-
 /**
  * @author Davide Marchignoli
  * @author Paolo Perrotta
  */
 @TestAnnotation(name = "xyz")
-@Entity
 public class Dad<T> extends Grandpa<List<T>, Integer> {
 
 	static Integer staticField;
