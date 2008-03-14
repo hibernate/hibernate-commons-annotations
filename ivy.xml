@@ -3,7 +3,7 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation=
                   "http://www.jayasoft.org/misc/ivy/ivy.xsd">
-    <info organisation="org.hibernate" module="commons-annotations"/>
+    <info organisation="org.hibernate" module="hibernate-commons-annotations"/>
     <configurations>
         <conf name="core" description="Core module dependencies"/>
         <conf name="test" visibility="private" description="Dependencies needed for testing purposes"/>
