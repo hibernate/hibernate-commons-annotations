@@ -12,6 +12,6 @@
         <artifact name="hibernate-commons-annotations" conf="core"/>
     </publications>
     <dependencies>
-		<dependency name="jpa-api" force="true" rev="1.0.0.GA" conf="test->default"/>
+		<dependency name="ejb3-persistence" rev="1.0.1.GA" conf="test->default"/>
     </dependencies>
 </ivy-module>

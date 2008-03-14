@@ -19,6 +19,10 @@
                 <ivy pattern="http://repository.jboss.org/[module]/[revision]/ivy.xml"/>
                 <artifact pattern="http://repository.jboss.org/[module]/[revision]/lib/[artifact].[ext]"/>
             </url>
+            <url name="jboss-rep-maven" m2compatible="true">
+                <ivy pattern="http://repository.jboss.org/maven2/[organization]/[module]/[revision]/ivy.xml"/>
+                <artifact pattern="http://repository.jboss.org/maven2/[organization]/[module]/[revision]/[artifact]-[revision].[ext]"/>
+            </url>
         </chain>
     </resolvers>
     <modules>
