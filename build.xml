@@ -9,7 +9,7 @@
 	<!-- Name of project and version, used to create filenames -->
 	<property name="Name" value="Hibernate Commons Annotations"/>
 	<property name="name" value="hibernate-commons-annotations"/>
-	<property name="version" value="3.0.0.GA"/>
+	<property name="version" value="3.1.0.CR1"/>
 	<property name="javadoc.packagenames" value="org.hibernate.commons.annotations.*"/>
 	<property name="copy.test" value="true"/>
 	<property name="javac.source" value="1.5"/>
@@ -21,7 +21,7 @@
 
     <import file="${common.dir}/common-build.xml"/>
 
-	<path id="lib.class.path">
+	<!-- FIXME path id="lib.class.path">
     	<fileset dir="${hibernate-core.lib.dir}">
 			<include name="commons-logging*.jar"/>
 			<include name="log4j*.jar"/>
@@ -34,17 +34,19 @@
 		</fileset>
         <path refid="lib.moduleclass.path"/>
 		<pathelement path="${clover.jar}"/>
+    </path -->
+    <path id="lib.moduleclass.path">
+        <fileset dir="${ivy.dep.dir}/core">
+			<include name="*.jar"/>
+		</fileset>
     </path>
 
-	<path id="junit.moduleclasspath">
+    <path id="junit.moduleclasspath">
 		<pathelement location="${src.dir}"/>
 		<pathelement location="${test.dir}"/>
 		<!-- pathelement location="${jpa-api.jar}"/ -->
         <fileset dir="${ivy.dep.dir}/test">
 			<include name="*.jar"/>
-		</fileset>
-        <fileset dir="${hibernate-core.lib.dir}">
-			<include name="junit*.jar"/>
 		</fileset>
 	</path>
 
@@ -98,8 +100,8 @@
 	</target>
 
     <target name="get.deps.core" depends="init" description="retrieve the core dependencies">
-        <ivy:resolve conf="core" />
-        <ivy:retrieve pattern="${ivy.dep.dir}/test/[artifact].[ext]" conf="core" />
+        <ivy:resolve conf="default" />
+        <ivy:retrieve pattern="${ivy.dep.dir}/core/[artifact].[ext]" conf="default" />
     </target>
 
     <target name="compile" depends="get.deps.core">
@@ -145,7 +147,7 @@
 		</manifest>
 		<antcall target="common-build.jar"/>
         <delete file="${dist.dir}/ivy.xml"/> <!-- delete last produced ivy file to be sure a new one will be generated -->        
-        <ivy:resolve conf="core"/>
+        <ivy:resolve conf="default"/>
         <ivy:publish artifactspattern="${dist.dir}/[artifact].[ext]"
             resolver="local"
             pubrevision="latest"
@@ -178,6 +180,11 @@
 			<fileset dir="${ivy.dep.dir}/test">
                 <include name="*.jar"/>
             </fileset>
+        </copy>
+
+        <mkdir dir="${dist.lib.dir}/build"/>
+        <copy todir="${dist.lib.dir}/build" failonerror="false">
+			<fileset file="${lib.dir}/build/*.jar"/>
         </copy>
         
         <antcall target="common-build.dist"/>

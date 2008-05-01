@@ -3,15 +3,25 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation=
                   "http://www.jayasoft.org/misc/ivy/ivy.xsd">
-    <info organisation="org.hibernate" module="hibernate-commons-annotations"/>
+    <info organisation="org.hibernate" module="commons-annotations"/>
     <configurations>
-        <conf name="core" description="Core module dependencies"/>
+        <conf name="default" description="Core module dependencies"/>
         <conf name="test" visibility="private" description="Dependencies needed for testing purposes"/>
     </configurations>
     <publications>
-        <artifact name="hibernate-commons-annotations" conf="core"/>
+        <artifact name="hibernate-commons-annotations" conf="default"/>
     </publications>
     <dependencies>
-		<dependency name="ejb3-persistence" rev="1.0.1.GA" conf="test->default"/>
+		<!-- compile time dependencies -->
+        <dependency org="commons-logging" name="commons-logging" rev="1.0.4" conf="default->default"/>
+
+        <!-- transitive dependencies -->
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.4.2" conf="test->default"/> <!-- soon to be a dep -->
+
+        <!-- test deps -->
+        <dependency name="ejb3-persistence" rev="1.0.2.GA" conf="test->default"/>
+        <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.4.2" conf="test->default"/>
+        <dependency org="log4j" name="log4j" rev="1.2.14" conf="test->default"/>
+        <dependency org="junit" name="junit" rev="3.8.1" conf="test->default"/>
     </dependencies>
 </ivy-module>
