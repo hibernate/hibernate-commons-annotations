@@ -13,10 +13,7 @@
     </publications>
     <dependencies>
 		<!-- compile time dependencies -->
-        <dependency org="commons-logging" name="commons-logging" rev="1.0.4" conf="default->default"/>
-
-        <!-- transitive dependencies -->
-        <dependency org="org.slf4j" name="slf4j-api" rev="1.4.2" conf="test->default"/> <!-- soon to be a dep -->
+        <dependency org="org.slf4j" name="slf4j-api" rev="1.4.2" conf="default->default"/>
 
         <!-- test deps -->
         <dependency name="ejb3-persistence" rev="1.0.2.GA" conf="test->default"/>

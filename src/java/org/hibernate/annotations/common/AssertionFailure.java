@@ -1,8 +1,9 @@
 //$Id: $
 package org.hibernate.annotations.common;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 
 /**
  * Indicates failure of an assertion: a possible bug in Hibernate.
@@ -13,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 //TODO Copy from Hibernate Core, do some mutualization here?
 public class AssertionFailure extends RuntimeException {
 
-	private static final Log log = LogFactory.getLog(AssertionFailure.class);
+	private static final Logger log = LoggerFactory.getLogger(AssertionFailure.class);
 
 	private static final String MESSAGE = "an assertion failure occured (this may indicate a bug in Hibernate)";
 
