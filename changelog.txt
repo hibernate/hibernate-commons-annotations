@@ -1,6 +1,14 @@
 Hibernate Annotations Changelog
 ===============================
 
+3.1.0.CR1 (27-05-2008)
+----------------------
+
+** New Feature
+    * [HCANN-1] - Move to slf4j
+    * [HCANN-2] - Add POM
+    * [HCANN-3] - Make build independent of Hibernate Core structure
+
 3.0.0.GA (19-03-2007)
 ---------------------
 

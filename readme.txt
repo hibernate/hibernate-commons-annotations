@@ -1,6 +1,6 @@
 Hibernate Commons Annotations
 ==================================================
-Version: 3.0.0.GA, 19.03.2007
+Version: 3.1.0.CR1, 27.05.2008
 
 Description
 -----------

@@ -20,6 +20,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
 import org.hibernate.annotations.common.reflection.java.generics.TypeSwitch;
 import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
 import org.hibernate.annotations.common.util.ReflectHelper;
+import org.hibernate.annotations.common.Version;
 
 /**
  * The factory for all the objects in this package.
@@ -30,7 +31,11 @@ import org.hibernate.annotations.common.util.ReflectHelper;
  */
 public class JavaReflectionManager implements ReflectionManager {
 
-    private static class TypeKey extends Pair<Type, TypeEnvironment> {
+	static {
+		Version.touch();
+	}
+
+	private static class TypeKey extends Pair<Type, TypeEnvironment> {
 		TypeKey(Type t, TypeEnvironment context) {
 			super( t, context );
 		}
