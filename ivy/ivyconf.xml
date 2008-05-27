@@ -13,7 +13,7 @@
                 <artifact pattern="../[module]/target/[revision]/[artifact].[ext]"/>
             </filesystem>
             <filesystem name="maven-local" m2compatible="true">
-                <artifact pattern="${maven.local.repo}/[organization]/hibernate-[module]/[revision]/hibernate-[artifact]-[revision].[ext]"/>
+                <artifact pattern="${offline.repository.jboss.org}/[organization]/hibernate-[module]/[revision]/hibernate-[artifact]-[revision].[ext]"/>
             </filesystem>
             <url name="jboss-rep-maven-regular" m2compatible="true">
                 <artifact pattern="http://repository.jboss.org/maven2/[organization]/[module]/[revision]/[artifact]-[revision].[ext]"/>
