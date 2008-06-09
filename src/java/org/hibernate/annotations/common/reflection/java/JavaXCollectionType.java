@@ -1,3 +1,4 @@
+// $Id:$
 package org.hibernate.annotations.common.reflection.java;
 
 import java.lang.reflect.ParameterizedType;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
  * @author Emmanuel Bernard
  * @author Paolo Perrotta
  */
+@SuppressWarnings("unchecked")
 class JavaXCollectionType extends JavaXType {
 
 	public JavaXCollectionType(Type type, TypeEnvironment context, JavaReflectionManager factory) {
@@ -36,8 +38,8 @@ class JavaXCollectionType extends JavaXType {
 				Type[] args = parameterizedType.getActualTypeArguments();
 				Type componentType;
 				Class<? extends Collection> collectionClass = getCollectionClass();
-				if ( collectionClass.isAssignableFrom( Map.class )
-						|| collectionClass.isAssignableFrom( SortedMap.class ) ) {
+				if ( Map.class.isAssignableFrom( collectionClass )
+						|| SortedMap.class.isAssignableFrom( collectionClass ) ) {
 					componentType = args[1];
 				}
 				else {
@@ -52,7 +54,7 @@ class JavaXCollectionType extends JavaXType {
 		return new TypeSwitch<XClass>() {
 			@Override
 			public XClass caseParameterizedType(ParameterizedType parameterizedType) {
-				if ( getCollectionClass().isAssignableFrom( Map.class ) ) {
+				if ( Map.class.isAssignableFrom( getCollectionClass() ) ) {
 					return toXClass( parameterizedType.getActualTypeArguments()[0] );
 				}
 				return null;
