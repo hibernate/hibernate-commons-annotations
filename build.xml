@@ -21,20 +21,6 @@
 
     <import file="${common.dir}/common-build.xml"/>
 
-	<!-- FIXME path id="lib.class.path">
-    	<fileset dir="${hibernate-core.lib.dir}">
-			<include name="commons-logging*.jar"/>
-			<include name="log4j*.jar"/>
-		</fileset>
-        <fileset dir="${lib.dir}">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${ivy.dep.dir}/core">
-			<include name="*.jar"/>
-		</fileset>
-        <path refid="lib.moduleclass.path"/>
-		<pathelement path="${clover.jar}"/>
-    </path -->
     <path id="lib.moduleclass.path">
         <fileset dir="${ivy.dep.dir}/core">
 			<include name="*.jar"/>
@@ -58,16 +44,6 @@
 	</path>
 	<taskdef resource="fr/jayasoft/ivy/ant/antlib.xml"
 			  uri="antlib:fr.jayasoft.ivy.ant" classpathref="ivy.lib.path"/>
-
-    <!-- target name="report">
-			<mkdir dir="test_output"/>
-			<junitreport todir="test_output">
-			  <fileset dir="test_output">
-				<include name="TEST-*.xml"/>
-			  </fileset>
-			  <report format="frames" todir="test_output/report"/>
-			</junitreport>
-		</target -->
 
 	<target name="init" description="Initialize the build">
 		<!-- CCed from common-build to avoid failure when hibernate core is not compiled -->
@@ -95,8 +71,6 @@
         <mkdir dir="${ivy.dep.dir}/core"/>
         <mkdir dir="${ivy.dep.dir}/test"/>
         <ivy:configure file="${ivy.jar.dir}/ivyconf.xml" />
-		<!-- check for dependency artefacts -->
-		<!-- available file="${jpa-api.jar}" type="file" property="jpa-api.jar.available"/ -->
 	</target>
 
     <target name="get.deps.core" depends="init" description="retrieve the core dependencies">
@@ -130,11 +104,6 @@
 			<src refid="testsrc.path"/>
 		</javac>
 	</target>
-
-	<!-- target name="get.jpa-api" depends="init" unless="jpa-api.jar.available">
-		<ant inheritall="false" dir="${basedir}/../jpa-api" target="clean"/>
-		<ant inheritall="false" dir="${basedir}/../jpa-api" target="jar"/>
-	</target -->
 
 	<target name="jar" depends="compile" description="Build the distribution .jar file">
 		<mkdir dir="${classes.dir}/META-INF"/>
