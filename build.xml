@@ -9,7 +9,7 @@
 	<!-- Name of project and version, used to create filenames -->
 	<property name="Name" value="Hibernate Commons Annotations"/>
 	<property name="name" value="hibernate-commons-annotations"/>
-	<property name="version" value="3.1.0.CR2"/>
+	<property name="version" value="3.1.0.GA"/>
 	<property name="javadoc.packagenames" value="org.hibernate.commons.annotations.*"/>
 	<property name="copy.test" value="true"/>
 	<property name="javac.source" value="1.5"/>
@@ -36,10 +36,7 @@
 	</path>
 
 	<target name="init" description="Initialize the build">
-		<!-- CCed from common-build to avoid failure when hibernate core is not compiled -->
-		<tstamp>
-			<format property="subversion" pattern="yyyy-MM-dd hh:mm:ss"/>
-		</tstamp>
+        <antcall target="common-build.init"/>
         <tstamp>
 			<format property="now" pattern="yyyyMMddhhmmss"/>
 		</tstamp>

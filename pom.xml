@@ -7,7 +7,7 @@
 	<artifactId>hibernate-commons-annotations</artifactId>
 	<packaging>jar</packaging>
 	<name>Hibernate Commons Annotations</name>
-	<version>3.1.0.CR2</version>
+	<version>@version@</version>
 	<licenses>
 		<license>
 			<name>GNU LESSER GENERAL PUBLIC LICENSE</name>

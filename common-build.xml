@@ -13,7 +13,7 @@
 	<property file="${common-build.basedir}/build.properties"/>
 	<property file="${user.home}/.ant.properties"/>
 	
-	<property name="src.dir" location="src/java"/>
+	<property name="src.dir" location="src/java"/> 
 	<property name="test.dir" location="src/test"/>
 	<property name="test.resources.dir" location="src/test-resources"/>
 	<property name="filter.dir" location="src/filters"/>
@@ -45,7 +45,7 @@
 	<property name="javac.source" value="1.4"/>
 	<property name="javac.target" value="1.4"/>
 	
-	<property name="pom.file" value="pom.xml"/>
+	<property name="pom.file" value="${build.dir}/pom.xml"/>
 	<property name="src.jar" value="${build.dir}/src.jar"/>
 	
 	<taskdef name="junit"
@@ -184,6 +184,9 @@
 		<tstamp>
 			<format property="subversion" pattern="yyyy-MM-dd hh:mm:ss"/>
 		</tstamp>
+		<tstamp>
+			<format property="releasedate" pattern="dd-MM-yyyy"/>
+		</tstamp>
 		<echo message="Build ${Name}-${version} (${subversion})"/>
 		<mkdir dir="${classes.dir}"/>
 		<mkdir dir="${testclasses.dir}"/>
@@ -192,11 +195,14 @@
 				<patternset refid="support.files"/>
 			</fileset>
 		</copy>
-		
-		<copy todir="${build.dir}">
+		<filter token="version" value="${version}"/>
+        <filter token="releasedate" value="${releasedate}"/>
+        <echo>filtering</echo>
+		<copy todir="${build.dir}" filtering="true">
 			<fileset dir=".">
 				<include name="readme.txt"/>
 				<include name="lgpl.txt"/>
+                <include name="pom.xml"/>
 			</fileset>
 		</copy>
 	</target>
@@ -302,7 +308,7 @@
 				<include name="*.bat"/>
 			</fileset>
 		</copy>
-		<copy file="readme.txt" todir="${dist.dir}"/>
+		<copy file="${build.dir}/readme.txt" todir="${dist.dir}"/>
 		<copy file="lgpl.txt" todir="${dist.dir}"/>
 		<copy file="changelog.txt" todir="${dist.dir}"/>
 		<copy file="build.xml" todir="${dist.dir}"/>
