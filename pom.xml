@@ -5,7 +5,7 @@
     <groupId>org.hibernate</groupId>
     <artifactId>hibernate-commons-annotations</artifactId>
     <packaging>jar</packaging>
-    <version>3.2.0.Beta1</version>
+    <version>3.2.0-SNAPSHOT</version>
 
     <name>Hibernate Commons Annotations</name>
     <description>Common reflection code used in support of annotation processing</description>
@@ -74,9 +74,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:https://svn.jboss.org/repos/hibernate/commons-annotations/tags/hibernate-commons-annotations-3.2.0.Beta1</connection>
-        <developerConnection>scm:svn:https://svn.jboss.org/repos/hibernate/commons-annotations/tags/hibernate-commons-annotations-3.2.0.Beta1</developerConnection>
-        <url>https://svn.jboss.org/repos/hibernate/commons-annotations/tags/hibernate-commons-annotations-3.2.0.Beta1</url>
+        <connection>scm:svn:https://svn.jboss.org/repos/hibernate/commons-annotations/trunk</connection>
+        <developerConnection>scm:svn:https://svn.jboss.org/repos/hibernate/commons-annotations/trunk</developerConnection>
+        <url>https://svn.jboss.org/repos/hibernate/commons-annotations/trunk</url>
     </scm>
 
     <dependencies>
