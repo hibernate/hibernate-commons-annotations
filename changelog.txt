@@ -1,6 +1,12 @@
 Hibernate Annotations Changelog
 ===============================
 
+3.2.0.GA (9-03-2010)
+--------------------
+
+** New Feature
+    * [HCANN-5] - Decouple the reflection work from the metadata overriding facility
+
 3.1.0.GA (20-08-2008)
 ----------------------
 
