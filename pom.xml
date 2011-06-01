@@ -97,9 +97,9 @@
     </issueManagement>
 
     <scm>
-        <connection>scm:svn:https://svn.jboss.org/repos/hibernate/commons-annotations/trunk</connection>
-        <developerConnection>scm:svn:https://svn.jboss.org/repos/hibernate/commons-annotations/trunk</developerConnection>
-        <url>https://svn.jboss.org/repos/hibernate/commons-annotations/trunk</url>
+        <connection>scm:git:git://github.com/hibernate/hibernate-commons-annotations.git</connection>
+        <developerConnection>scm:git:git@github.com:hibernate/hibernate-commons-annotations.git</developerConnection>
+        <url>http://github.com/hibernate/hibernate-commons-annotations</url>
     </scm>
 
     <dependencies>
