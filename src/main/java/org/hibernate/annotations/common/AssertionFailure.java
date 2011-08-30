@@ -1,10 +1,10 @@
 /*
  * Hibernate, Relational Persistence for Idiomatic Java
  *
- * Copyright (c) 2008, Red Hat Middleware LLC or third-party contributors as
+ * Copyright (c) 2011, Red Hat Inc. or third-party contributors as
  * indicated by the @author tags or express copyright attribution
  * statements applied by the authors.  All third-party contributions are
- * distributed under license by Red Hat Middleware LLC.
+ * distributed under license by Red Hat Inc.
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -23,9 +23,7 @@
  */
 package org.hibernate.annotations.common;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
-
+import org.jboss.logging.Logger;
 
 /**
  * Indicates failure of an assertion: a possible bug in Hibernate.
@@ -36,19 +34,16 @@ import org.slf4j.Logger;
  * @auhor Emmanuel Bernard
  */
 public class AssertionFailure extends RuntimeException {
+    private static final Logger log = Logger.getLogger( AssertionFailure.class );
 
-	private static final Logger log = LoggerFactory.getLogger(AssertionFailure.class);
+    public AssertionFailure(String s) {
+        super( s );
+        log.error( "an assertion failure occured (this may indicate a bug in Hibernate)", this );
+    }
 
-	private static final String MESSAGE = "an assertion failure occured (this may indicate a bug in Hibernate)";
-
-	public AssertionFailure(String s) {
-		super(s);
-		log.error(MESSAGE, this);
-	}
-
-	public AssertionFailure(String s, Throwable t) {
-		super(s, t);
-		log.error(MESSAGE, t);
-	}
+    public AssertionFailure(String s, Throwable t) {
+        super( s, t );
+        log.error( "an assertion failure occured (this may indicate a bug in Hibernate)", t );
+    }
 
 }
