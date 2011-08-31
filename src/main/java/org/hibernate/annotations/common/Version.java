@@ -30,7 +30,7 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  * @author Emmanuel Bernard
  */
 public class Version {
-	private static final Log log = LoggerFactory.make();
+	private static final Log log = LoggerFactory.make( Version.class.getName() );
 
 	static {
 		log.version( getVersionString() );

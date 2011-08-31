@@ -35,7 +35,7 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  */
 public class AssertionFailure extends RuntimeException {
 
-	private static final Log log = LoggerFactory.make();
+	private static final Log log = LoggerFactory.make( AssertionFailure.class.getName() );
 
 	public AssertionFailure(String s) {
 		super(s);

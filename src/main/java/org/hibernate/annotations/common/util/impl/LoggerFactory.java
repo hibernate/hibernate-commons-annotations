@@ -26,18 +26,12 @@ import org.jboss.logging.Logger;
  * A factory class for class loggers. Allows a creation of loggers after the DRY principle.
  *
  * @author Hardy Ferentschik
+ * @author Emmanuel Bernard <emmanuel@hibernate.org>
  */
 public class LoggerFactory {
-	public static Log make() {
-		Throwable t = new Throwable();
-		StackTraceElement directCaller = t.getStackTrace()[1];
-		return Logger.getMessageLogger( Log.class, directCaller.getClassName() );
-	}
 
-	public static <T> T make(Class<T> logClass) {
-		Throwable t = new Throwable();
-		StackTraceElement directCaller = t.getStackTrace()[1];
-		return Logger.getMessageLogger( logClass, directCaller.getClassName() );
+	public static Log make(String category) {
+		return Logger.getMessageLogger( Log.class, category );
 	}
 }
 
