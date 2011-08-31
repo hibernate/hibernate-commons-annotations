@@ -23,20 +23,26 @@
  */
 package org.hibernate.annotations.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jboss.logging.Logger;
 
 /**
  * @author Emmanuel Bernard
  */
 public class Version {
-	public static final String VERSION = "3.2.1-SNAPSHOT";
-	private static Logger log = LoggerFactory.getLogger( Version.class );
+	private static final Logger log = Logger.getLogger( Version.class );
 
 	static {
-		log.info( "Hibernate Commons Annotations {}", VERSION );
+		log.info( "Hibernate Commons Annotations {" + getVersionString() + "}" );
 	}
+
+    public static String getVersionString(){
+        return "[WORKING]";
+    }
 
 	public static void touch() {
 	}
+
+    public static void main(String[] args) {
+        System.out.println( "Hibernate Commons Annotations {" + getVersionString() + "}" );
+    }
 }
