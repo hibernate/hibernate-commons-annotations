@@ -112,6 +112,7 @@
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging-processor</artifactId>
             <version>${jbossLoggingProcessorVersion}</version>
+            <optional>true</optional>
         </dependency>
         <!-- test-scoped dependencies for common testing dependencies -->
         <dependency>
