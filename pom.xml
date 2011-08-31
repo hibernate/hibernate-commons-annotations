@@ -28,7 +28,7 @@
     <groupId>org.hibernate.common</groupId>
     <artifactId>hibernate-commons-annotations</artifactId>
     <packaging>jar</packaging>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.0.0.CR2</version>
 
     <name>Hibernate Commons Annotations</name>
     <description>Common reflection code used in support of annotation processing</description>
