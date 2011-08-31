@@ -22,9 +22,7 @@
  * Boston, MA  02110-1301  USA
  */
 package org.hibernate.annotations.common;
-
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.jboss.logging.Logger;
 
 
 /**
@@ -37,7 +35,7 @@ import org.slf4j.Logger;
  */
 public class AssertionFailure extends RuntimeException {
 
-	private static final Logger log = LoggerFactory.getLogger(AssertionFailure.class);
+	private static final Logger log = Logger.getLogger( AssertionFailure.class );
 
 	private static final String MESSAGE = "an assertion failure occured (this may indicate a bug in Hibernate)";
 
