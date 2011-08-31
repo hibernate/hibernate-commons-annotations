@@ -1,6 +1,23 @@
 Hibernate Annotations Changelog
 ===============================
 
+4.0.0.CR1 (31-08-2011)
+----------------------
+
+** Bug
+    * [HCANN-37] - Upgrade pom.xml info on SCM (move to Git)
+
+** Improvement
+    * [HCANN-36] - Add lgpl.txt file to the repository
+    * [HCANN-39] - Move to new Maven groupId
+
+** New Feature
+    * [HCANN-38] - change to use jboss logging from slf4j
+
+** Task
+    * [HCANN-20] - Update pom to use the new distributationManagement information
+
+
 3.2.0.GA (9-03-2010)
 --------------------
 
