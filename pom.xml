@@ -25,7 +25,7 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.hibernate</groupId>
+    <groupId>org.hibernate.common</groupId>
     <artifactId>hibernate-commons-annotations</artifactId>
     <packaging>jar</packaging>
     <version>3.2.1-SNAPSHOT</version>
