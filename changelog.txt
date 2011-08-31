@@ -1,6 +1,12 @@
 Hibernate Annotations Changelog
 ===============================
 
+4.0.0.CR2 (31-08-2011)
+----------------------
+
+* [HCANN-40] - Make JBoss logging annotation processor an optional dependency to avoid JDK bug uncovering in Core
+
+
 4.0.0.CR1 (31-08-2011)
 ----------------------
 
