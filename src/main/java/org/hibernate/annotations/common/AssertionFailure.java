@@ -1,7 +1,7 @@
 /*
  * Hibernate, Relational Persistence for Idiomatic Java
  *
- * Copyright (c) 2008, Red Hat Middleware LLC or third-party contributors as
+ * Copyright (c) 2008-2011, Red Hat Middleware LLC or third-party contributors as
  * indicated by the @author tags or express copyright attribution
  * statements applied by the authors.  All third-party contributions are
  * distributed under license by Red Hat Middleware LLC.
@@ -23,32 +23,27 @@
  */
 package org.hibernate.annotations.common;
 
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
+import org.hibernate.annotations.common.util.impl.Log;
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
 
 
 /**
  * Indicates failure of an assertion: a possible bug in Hibernate.
- * <p/>
- * TODO : Copy from Hibernate Core, do some mutualization here?
  *
  * @author Gavin King
  * @auhor Emmanuel Bernard
  */
 public class AssertionFailure extends RuntimeException {
 
-	private static final Logger log = LoggerFactory.getLogger(AssertionFailure.class);
-
-	private static final String MESSAGE = "an assertion failure occured (this may indicate a bug in Hibernate)";
+	private static final Log log = LoggerFactory.make();
 
 	public AssertionFailure(String s) {
 		super(s);
-		log.error(MESSAGE, this);
+		log.assertionFailure( this );
 	}
 
 	public AssertionFailure(String s, Throwable t) {
 		super(s, t);
-		log.error(MESSAGE, t);
+		log.assertionFailure( this );
 	}
-
 }
