@@ -30,20 +30,21 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  * @author Emmanuel Bernard
  */
 public class Version {
+
 	private static final Log log = LoggerFactory.make( Version.class.getName() );
 
 	static {
 		log.version( getVersionString() );
 	}
 
-    public static String getVersionString(){
-        return "[WORKING]";
-    }
+	public static String getVersionString() {
+		return "[WORKING]";
+	}
 
 	public static void touch() {
 	}
 
-    public static void main(String[] args) {
-        System.out.println( "Hibernate Commons Annotations {" + getVersionString() + "}" );
-    }
+	public static void main(String[] args) {
+		System.out.println( "Hibernate Commons Annotations {" + getVersionString() + "}" );
+	}
 }
