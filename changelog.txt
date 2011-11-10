@@ -1,6 +1,13 @@
 Hibernate Annotations Changelog
 ===============================
 
+4.0.0.Final (10-11-2011)
+------------------------
+
+* [HCANN-41] - Upgrade JBoss Logging and align version numbers
+* [HCANN-42] - Make sure project build with JDK 7
+
+
 4.0.0.CR2 (31-08-2011)
 ----------------------
 
@@ -30,8 +37,10 @@ Hibernate Annotations Changelog
 ** New Feature
     * [HCANN-5] - Decouple the reflection work from the metadata overriding facility
 
+
 3.1.0.GA (20-08-2008)
 ----------------------
+
 
 3.1.0.CR2 (23-07-2008)
 ----------------------
@@ -47,6 +56,7 @@ Hibernate Annotations Changelog
     * [HCANN-1] - Move to slf4j
     * [HCANN-2] - Add POM
     * [HCANN-3] - Make build independent of Hibernate Core structure
+
 
 3.0.0.GA (19-03-2007)
 ---------------------
