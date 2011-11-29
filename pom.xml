@@ -103,8 +103,8 @@
     </scm>
 
     <properties>
-        <jbossLoggingVersion>3.1.0.CR1</jbossLoggingVersion>
-        <jbossLoggingProcessorVersion>1.0.0.CR4</jbossLoggingProcessorVersion>
+        <jbossLoggingVersion>3.1.0.CR2</jbossLoggingVersion>
+        <jbossLoggingProcessorVersion>1.0.0.CR5</jbossLoggingProcessorVersion>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
