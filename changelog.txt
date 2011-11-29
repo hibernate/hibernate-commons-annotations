@@ -1,6 +1,13 @@
 Hibernate Annotations Changelog
 ===============================
 
+4.0.1.Final (29-11-2011)
+------------------------
+
+** Task
+    * [HCANN-43] - Move to JBoss Logging 3.1.0.CR2
+
+
 4.0.0.Final (10-11-2011)
 ------------------------
 
