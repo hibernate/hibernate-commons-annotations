@@ -30,6 +30,13 @@ import java.util.Collection;
  */
 public abstract interface XMember extends XAnnotatedElement {
 
+	/**
+	 * Retrieve the XClass reference for the class which declares this member.
+	 *
+	 * @return The XClass representing the declaring class of the underlying member
+	 */
+	public XClass getDeclaringClass();
+
 	String getName();
 
 	boolean isCollection();

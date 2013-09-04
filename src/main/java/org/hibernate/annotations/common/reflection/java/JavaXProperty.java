@@ -29,6 +29,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import org.hibernate.annotations.common.reflection.XClass;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment;
 
@@ -65,6 +66,7 @@ class JavaXProperty extends JavaXMember implements XProperty {
 		}
 	}
 
+	@Override
 	public Object invoke(Object target, Object... parameters) {
 		if ( parameters.length != 0 ) {
 			throw new IllegalArgumentException( "An XProperty cannot have invoke parameters" );

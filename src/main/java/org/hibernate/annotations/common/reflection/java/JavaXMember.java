@@ -80,6 +80,11 @@ public abstract class JavaXMember extends JavaXAnnotatedElement implements XMemb
 		return (Member) toAnnotatedElement();
 	}
 
+	@Override
+	public XClass getDeclaringClass() {
+		return getFactory().toXClass( getMember().getDeclaringClass() );
+	}
+
 	public Class<? extends Collection> getCollectionClass() {
 		return xType.getCollectionClass();
 	}

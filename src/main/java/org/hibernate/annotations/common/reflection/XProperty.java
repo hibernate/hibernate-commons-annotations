@@ -36,9 +36,4 @@ package org.hibernate.annotations.common.reflection;
  * @author Emmanuel Bernard
  */
 public interface XProperty extends XMember {
-
-	/**
-	 * Unqualify the getter name
-	 */
-	String getName();
 }
