@@ -29,9 +29,12 @@ import org.jboss.logging.Logger;
  * @author Emmanuel Bernard <emmanuel@hibernate.org>
  */
 public class LoggerFactory {
-
 	public static Log make(String category) {
 		return Logger.getMessageLogger( Log.class, category );
+	}
+
+	public static Logger logger(Class caller) {
+		return Logger.getLogger( caller.getName() );
 	}
 }
 

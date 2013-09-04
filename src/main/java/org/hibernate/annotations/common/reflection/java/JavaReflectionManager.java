@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.hibernate.annotations.common.reflection.AnnotationReader;
+import org.hibernate.annotations.common.reflection.ClassLoaderDelegate;
+import org.hibernate.annotations.common.reflection.ClassLoadingException;
 import org.hibernate.annotations.common.reflection.ReflectionManager;
 import org.hibernate.annotations.common.reflection.XClass;
 import org.hibernate.annotations.common.reflection.XMethod;
@@ -46,6 +48,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeSwitch;
 import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
 import org.hibernate.annotations.common.Version;
 import org.hibernate.annotations.common.util.ReflectHelper;
+import org.hibernate.annotations.common.util.StandardClassLoaderDelegateImpl;
 
 /**
  * The factory for all the objects in this package.
@@ -55,8 +58,12 @@ import org.hibernate.annotations.common.util.ReflectHelper;
  * @author Emmanuel Bernard
  */
 public class JavaReflectionManager implements ReflectionManager, MetadataProviderInjector {
-
 	private MetadataProvider metadataProvider;
+	private ClassLoaderDelegate classLoaderDelegate = StandardClassLoaderDelegateImpl.INSTANCE;
+
+	static {
+		Version.touch();
+	}
 
 	public MetadataProvider getMetadataProvider() {
 		if (metadataProvider == null) {
@@ -69,8 +76,19 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		this.metadataProvider = metadataProvider;
 	}
 
-	static {
-		Version.touch();
+	@Override
+	public void injectClassLoaderDelegate(ClassLoaderDelegate delegate) {
+		if ( delegate == null ) {
+			this.classLoaderDelegate = StandardClassLoaderDelegateImpl.INSTANCE;
+		}
+		else {
+			this.classLoaderDelegate = delegate;
+		}
+	}
+
+	@Override
+	public ClassLoaderDelegate getClassLoaderDelegate() {
+		return classLoaderDelegate;
 	}
 
 	private static class TypeKey extends Pair<Type, TypeEnvironment> {
@@ -113,12 +131,19 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		return (Method) ( (JavaXAnnotatedElement) xMethod ).toAnnotatedElement();
 	}
 
+	@Override
+	@Deprecated
 	public XClass classForName(String name, Class caller) throws ClassNotFoundException {
 		return toXClass( ReflectHelper.classForName( name, caller ) );
 	}
 
+	@Override
+	public XClass classForName(String name) throws ClassLoadingException {
+		return toXClass( getClassLoaderDelegate().classForName( name ) );
+	}
+
 	public XPackage packageForName(String packageName) throws ClassNotFoundException {
-		return getXAnnotatedElement( ReflectHelper.classForName( packageName + ".package-info" ).getPackage() );
+		return getXAnnotatedElement( getClassLoaderDelegate().classForName( packageName + ".package-info" ).getPackage() );
 	}
 
 	XClass toXClass(Type t, final TypeEnvironment context) {
