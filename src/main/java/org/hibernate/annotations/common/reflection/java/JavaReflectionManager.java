@@ -49,6 +49,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
 import org.hibernate.annotations.common.Version;
 import org.hibernate.annotations.common.util.ReflectHelper;
 import org.hibernate.annotations.common.util.StandardClassLoaderDelegateImpl;
+import org.hibernate.annotations.common.util.impl.LoggerFactory;
 
 /**
  * The factory for all the objects in this package.
@@ -62,7 +63,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 	private ClassLoaderDelegate classLoaderDelegate = StandardClassLoaderDelegateImpl.INSTANCE;
 
 	static {
-		Version.touch();
+		LoggerFactory.make( Version.class.getName() ).version( Version.getVersionString() );
 	}
 
 	public MetadataProvider getMetadataProvider() {

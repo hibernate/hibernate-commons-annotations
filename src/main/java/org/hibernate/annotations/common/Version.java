@@ -31,11 +31,11 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  */
 public class Version {
 
-	private static final Log log = LoggerFactory.make( Version.class.getName() );
-
-	static {
-		log.version( getVersionString() );
-	}
+//	private static final Log log = LoggerFactory.make( Version.class.getName() );
+//
+//	static {
+//		log.version( getVersionString() );
+//	}
 
 	public static String getVersionString() {
 		return "[WORKING]";
