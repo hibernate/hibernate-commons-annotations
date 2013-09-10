@@ -36,8 +36,9 @@ version = '4.0.4-SNAPSHOT'
 
 buildDir = "target"
 
-targetCompatibility = '1.6'
-sourceCompatibility = '1.6'
+ext.javaLanguageLevel = "1.6"
+targetCompatibility = project.javaLanguageLevel
+sourceCompatibility = project.javaLanguageLevel
 
 configurations {
     jbossLoggingTool {
@@ -70,12 +71,59 @@ dependencies {
 task compile
 compile.dependsOn compileJava, processResources, compileTestJava, processTestResources
 
-// apply the JBoss Logging AP to the (main) compileJava task.  Here, compared to ORM build, we do the simplified
-// "in line" execution of the processor as part of the main java compilation
-compileJava {
-    classpath += configurations.jbossLoggingTool
+
+// apply the JBoss Logging tool ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+compileJava.options.define(compilerArgs: ["-proc:none", "-encoding", "UTF-8"])
+compileTestJava.options.define(compilerArgs: ["-proc:none", "-encoding", "UTF-8"])
+
+sourceSets.all {
+    ext.originalJavaSrcDirs = java.srcDirs
+    ext.generatedLoggingSrcDir = file( "${buildDir}/generated-src/logging/${name}" )
+    java.srcDir generatedLoggingSrcDir
 }
 
+task generateMainLoggingClasses(type: JavaCompile) {
+    ext.aptDumpDir = file( "${buildDir}/tmp/apt/logging" )
+    classpath = compileJava.classpath + configurations.jbossLoggingTool
+    source = sourceSets.main.originalJavaSrcDirs
+    destinationDir = aptDumpDir
+    options.define(
+            compilerArgs: [
+                    "-nowarn",
+                    "-proc:only",
+                    "-encoding", "UTF-8",
+                    "-processor", "org.jboss.logging.processor.apt.LoggingToolsProcessor",
+                    "-s", "$sourceSets.main.generatedLoggingSrcDir.absolutePath",
+//                            "-AloggingVersion=3.0",
+                    "-Adebug=true",
+                    "-AskipTranslations=true",
+                    "-source", rootProject.javaLanguageLevel,
+                    "-target", rootProject.javaLanguageLevel,
+                    "-AtranslationFilesPath=${project.rootDir}/src/main/resources"
+
+            ]
+    );
+    outputs.dir sourceSets.main.generatedLoggingSrcDir;
+    doFirst {
+//                source = sourceSets.main.originalJavaSrcDirs
+        sourceSets.main.generatedLoggingSrcDir.mkdirs()
+    }
+    doLast {
+        aptDumpDir.delete()
+    }
+}
+
+// for the time being eat the annoying output from running the annotation processors
+generateMainLoggingClasses.logging.captureStandardError(LogLevel.INFO)
+
+task generateSources( type: Task )
+generateSources.dependsOn generateMainLoggingClasses
+
+compileJava.dependsOn generateMainLoggingClasses
+
+
+// Project version injection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 versionInjection {
     into( 'org.hibernate.annotations.common.Version', 'getVersionString' )
 }
