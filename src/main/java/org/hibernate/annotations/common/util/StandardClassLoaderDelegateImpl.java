@@ -50,7 +50,7 @@ public class StandardClassLoaderDelegateImpl implements ClassLoaderDelegate {
 			}
 		}
 		catch ( Throwable ignore ) {
-			log.debugf( "Unable to locate Class [%s] using TCCL, falling back to HCANN ClassLoader" );
+			log.debugf( "Unable to locate Class [%s] using TCCL, falling back to HCANN ClassLoader", className );
 		}
 
 		try {
