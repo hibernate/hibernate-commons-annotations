@@ -108,12 +108,8 @@ public class TypeUtils {
 	}
 
 	private static boolean isCollectionClass(Class<?> clazz) {
-		return clazz == Collection.class
-				|| clazz == java.util.List.class
-				|| clazz == java.util.Set.class
-				|| clazz == java.util.Map.class
-				|| clazz == java.util.SortedSet.class // extension to the specs
-				|| clazz == java.util.SortedMap.class; // extension to the specs
+        return Collection.class.isAssignableFrom( clazz)
+                || java.util.Map.class.isAssignableFrom( clazz);
 	}
 
 	public static boolean isSimple(Type type) {
