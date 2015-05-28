@@ -1,22 +1,35 @@
-repositories {
-    mavenCentral()
-    mavenLocal()
-
-    mavenRepo name: 'jboss-nexus', url: "http://repository.jboss.org/nexus/content/groups/public/"
-    mavenRepo name: "jboss-snapshots", url: "http://snapshots.jboss.org/maven2/"
-}
-
 buildscript {
     repositories {
         mavenCentral()
         mavenLocal()
 
-        mavenRepo name: 'jboss-nexus', url: "http://repository.jboss.org/nexus/content/groups/public/"
-        mavenRepo name: "jboss-snapshots", url: "http://snapshots.jboss.org/maven2/"
+        maven {
+            name 'jboss-nexus'
+            url "http://repository.jboss.org/nexus/content/groups/public/"
+        }
+        maven {
+            name "jboss-snapshots"
+            url "http://snapshots.jboss.org/maven2/"
+        }
     }
     dependencies {
         classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
         classpath 'org.hibernate.build.gradle:version-injection-plugin:1.0.0'
+        classpath 'org.hibernate.build.gradle:gradle-animalSniffer-plugin:1.0.1.Final'
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven {
+        name 'jboss-nexus'
+        url "http://repository.jboss.org/nexus/content/groups/public/"
+    }
+    maven {
+        name "jboss-snapshots"
+        url "http://snapshots.jboss.org/maven2/"
     }
 }
 
@@ -24,6 +37,7 @@ apply plugin: 'java'
 apply plugin: 'osgi'
 
 apply plugin: 'version-injection'
+apply plugin: 'org.hibernate.build.gradle.animalSniffer'
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -44,14 +58,6 @@ configurations {
     jbossLoggingTool {
         description = 'Configuration for defining dependencies needed to run the JBoss Logging AnnotationProcessor tool'
     }
-
-    animalSniffer {
-        description = 'Configuration for defining dependencies needed to run the Animal Sniffer tool'
-    }
-
-    javaApiSignature {
-        description = 'Configuration for defining the Animal Sniffer signature file to use'
-    }
 }
 
 dependencies {
@@ -62,8 +68,7 @@ dependencies {
 
     testCompile( 'junit:junit:3.8.1' )
 
-    animalSniffer 'org.codehaus.mojo:animal-sniffer-ant-tasks:1.8'
-    javaApiSignature 'org.codehaus.mojo.signature:java16:1.0@signature'
+    animalSnifferSignature 'org.codehaus.mojo.signature:java16:1.0@signature'
 }
 
 // create a special 'compile' task that performs all the tasks normally associated with compiling a project
@@ -72,89 +77,28 @@ task compile
 compile.dependsOn compileJava, processResources, compileTestJava, processTestResources
 
 
-// apply the JBoss Logging tool ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+project.getConvention().findPlugin( JavaPluginConvention.class ).sourceSets.each { sourceSet ->
+    JavaCompile javaCompileTask = project.tasks.findByName( sourceSet.compileJavaTaskName ) as JavaCompile
 
-compileJava.options.define(compilerArgs: ["-proc:none", "-encoding", "UTF-8"])
-compileTestJava.options.define(compilerArgs: ["-proc:none", "-encoding", "UTF-8"])
+    File aptDir = project.file( "${project.buildDir}/generated-src/apt/${sourceSet.name}" )
+    sourceSet.allJava.srcDir( aptDir )
+    sourceSet.compileClasspath += configurations.jbossLoggingTool
 
-sourceSets.all {
-    ext.originalJavaSrcDirs = java.srcDirs
-    ext.generatedLoggingSrcDir = file( "${buildDir}/generated-src/logging/${name}" )
-    java.srcDir generatedLoggingSrcDir
-}
+    javaCompileTask.options.compilerArgs += [
+            "-nowarn",
+            "-encoding", "UTF-8",
+            "-s", "${aptDir.absolutePath}"
+    ]
 
-task generateMainLoggingClasses(type: JavaCompile) {
-    ext.aptDumpDir = file( "${buildDir}/tmp/apt/logging" )
-    classpath = compileJava.classpath + configurations.jbossLoggingTool
-    source = sourceSets.main.originalJavaSrcDirs
-    destinationDir = aptDumpDir
-    options.define(
-            compilerArgs: [
-                    "-nowarn",
-                    "-proc:only",
-                    "-encoding", "UTF-8",
-                    "-processor", "org.jboss.logging.processor.apt.LoggingToolsProcessor",
-                    "-s", "$sourceSets.main.generatedLoggingSrcDir.absolutePath",
-//                            "-AloggingVersion=3.0",
-                    "-Adebug=true",
-                    "-AskipTranslations=true",
-                    "-source", rootProject.javaLanguageLevel,
-                    "-target", rootProject.javaLanguageLevel,
-                    "-AtranslationFilesPath=${project.rootDir}/src/main/resources"
-
-            ]
-    );
-    outputs.dir sourceSets.main.generatedLoggingSrcDir;
-    doFirst {
-//                source = sourceSets.main.originalJavaSrcDirs
-        sourceSets.main.generatedLoggingSrcDir.mkdirs()
-    }
-    doLast {
-        aptDumpDir.delete()
+    javaCompileTask.doFirst {
+        aptDir.mkdirs()
     }
 }
-
-// for the time being eat the annoying output from running the annotation processors
-generateMainLoggingClasses.logging.captureStandardError(LogLevel.INFO)
-
-task generateSources( type: Task )
-generateSources.dependsOn generateMainLoggingClasses
-
-compileJava.dependsOn generateMainLoggingClasses
 
 
 // Project version injection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 versionInjection {
     into( 'org.hibernate.annotations.common.Version', 'getVersionString' )
-}
-
-
-// Animal Sniffer ~~~~~~~~~~~~~~~~~~
-//      add animal sniffer Java API checking to the main compile tasks
-
-// copy the resolved Animal Sniffer signature dependency artifact to a known location and name
-task copyJavaApiSignature(type: Copy) {
-    from configurations.javaApiSignature
-    into "$buildDir/javaApiSignature/"
-    rename '.*signature', 'javaApi.signature'
-}
-
-// prepare the Animal Sniffer signature copy every time (before) we compile
-compileJava.dependsOn copyJavaApiSignature
-
-// and then after compilation, run the Animal Sniffer tool
-compileJava.doLast {
-    ant.taskdef(
-            name: 'animalSniffer',
-            classname: 'org.codehaus.mojo.animal_sniffer.ant.CheckSignatureTask',
-            classpath: configurations.animalSniffer.asPath
-    )
-
-    ant.animalSniffer(
-            signature: "$buildDir/javaApiSignature/javaApi.signature",
-            classpath: sourceSets.main.compileClasspath.asPath) {
-        path( path: sourceSets.main.output.classesDir )
-    }
 }
 
 jar {
@@ -253,10 +197,6 @@ publishing {
             }
         }
     }
-
-    generatePomFileForMavenJavaPublication {
-        destination = file("$buildDir/generated-pom.xml")
-    }
 }
 
 
@@ -334,6 +274,6 @@ class OsgiManifestPackagingInfo {
 // Wrapper ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.7'
+    gradleVersion = '2.4'
 }
 

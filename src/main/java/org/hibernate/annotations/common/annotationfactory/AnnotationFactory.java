@@ -38,28 +38,47 @@ import java.lang.reflect.Proxy;
  */
 public class AnnotationFactory {
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Creates an Annotation proxy for the given annotation descriptor.
+	 * <p/>
+	 * NOTE: the proxy here is generated using the ClassLoader of the Annotation type's Class.  E.g.,
+	 * if asked to create an Annotation proxy for javax.persistence.Entity we would use the ClassLoader
+	 * of the javax.persistence.Entity Class for generating the proxy.
+	 *
+	 * @param descriptor The annotation descriptor
+	 *
+	 * @return The annotation proxy
+	 */
 	public static <T extends Annotation> T create(AnnotationDescriptor descriptor) {
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        //TODO round 34ms to generate the proxy, hug! is Javassist Faster?
-        //TODO prebuild the javax.persistence and org.hibernate.annotations classes?
-        Class<T> proxyClass = (Class<T>) Proxy.getProxyClass( classLoader, descriptor.type() );
-		InvocationHandler handler = new AnnotationProxy( descriptor );
-		try {
-			return getProxyInstance( proxyClass, handler );
-		}
-		catch (RuntimeException e) {
-			throw e;
-		}
-		catch (Exception e) {
-			throw new RuntimeException( e );
-		}
+		return create( descriptor, descriptor.type().getClassLoader() );
 	}
 
-	private static <T extends Annotation> T getProxyInstance(Class<T> proxyClass, InvocationHandler handler) throws
-			SecurityException, NoSuchMethodException, IllegalArgumentException, InstantiationException,
-			IllegalAccessException, InvocationTargetException {
-		Constructor<T> constructor = proxyClass.getConstructor( new Class[]{InvocationHandler.class} );
-		return constructor.newInstance( new Object[]{handler} );
+	/**
+	 * Legacy form of {@link #create(AnnotationDescriptor) using the current Thread#getContextClassLoader
+	 * for proxy generation
+	 *
+	 * @param descriptor The annotation descriptor
+	 *
+	 * @return The annotation proxy
+	 */
+	public static <T extends Annotation> T createUsingTccl(AnnotationDescriptor descriptor) {
+		return create( descriptor, Thread.currentThread().getContextClassLoader() );
+	}
+
+	/**
+	 * Overloaded form of Annotation proxy creation that accepts an explicit ClassLoader.
+	 *
+	 * @param descriptor The annotation descriptor
+	 * @param classLoader The ClassLoader to be used in defining the proxy
+	 *
+	 * @return The annotation proxy
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Annotation> T create(AnnotationDescriptor descriptor, ClassLoader classLoader) {
+		return (T) Proxy.newProxyInstance(
+				classLoader,
+				new Class[] {descriptor.type()},
+				new AnnotationProxy( descriptor )
+		);
 	}
 }
