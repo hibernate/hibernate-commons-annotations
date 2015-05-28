@@ -61,10 +61,10 @@ configurations {
 }
 
 dependencies {
-    compile( 'org.jboss.logging:jboss-logging:3.1.3.GA' )
-    compile 'org.jboss.logging:jboss-logging-annotations:1.2.0.Beta1'
+    compile 'org.jboss.logging:jboss-logging:3.3.0.Final'
 
-    jbossLoggingTool 'org.jboss.logging:jboss-logging-processor:1.2.0.Beta1'
+    jbossLoggingTool 'org.jboss.logging:jboss-logging-annotations:2.0.0.Final'
+    jbossLoggingTool 'org.jboss.logging:jboss-logging-processor:2.0.0.Final'
 
     testCompile( 'junit:junit:3.8.1' )
 
@@ -195,6 +195,12 @@ publishing {
                 name 'jboss-releases-repository'
                 url 'https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/'
             }
+        }
+    }
+
+    model {
+        tasks.generatePomFileForMavenJavaPublication {
+            destination = file( "$buildDir/generated-pom.xml" )
         }
     }
 }

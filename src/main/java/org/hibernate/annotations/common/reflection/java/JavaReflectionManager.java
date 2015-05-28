@@ -134,6 +134,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 
 	@Override
 	@Deprecated
+	@SuppressWarnings("deprecation")
 	public XClass classForName(String name, Class caller) throws ClassNotFoundException {
 		return toXClass( ReflectHelper.classForName( name, caller ) );
 	}

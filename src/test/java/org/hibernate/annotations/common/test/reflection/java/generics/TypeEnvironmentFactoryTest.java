@@ -17,7 +17,7 @@ public class TypeEnvironmentFactoryTest extends TestCase {
 
 	public void testBindsGenericsToSuperclassEnvironment() throws SecurityException, NoSuchMethodException {
 		TypeEnvironmentFactory env = new TypeEnvironmentFactory();
-		Type type = Grandpa.class.getMethod( "returnsGeneric", new Class[0] ).getGenericReturnType();
+		Type type = Grandpa.class.getMethod( "returnsGeneric" ).getGenericReturnType();
 
 		Type asSeenFromGrandpa = env.getEnvironment( Grandpa.class ).bind( type );
 		assertTrue( asSeenFromGrandpa instanceof TypeVariable );
@@ -31,16 +31,17 @@ public class TypeEnvironmentFactoryTest extends TestCase {
 		assertType_isCollectionOfClass_withElementsOfClass( asSeenFromSon, List.class, String.class );
 	}
 
+	@SuppressWarnings("unchecked")
 	public void testBindsGenericsToOwnerEnvironment() throws SecurityException, NoSuchMethodException {
 		TypeEnvironmentFactory env = new TypeEnvironmentFactory();
 
-		Type friendType = Dad.class.getMethod( "getFriend", new Class[0] ).getGenericReturnType();
+		Type friendType = Dad.class.getMethod( "getFriend" ).getGenericReturnType();
 		ParameterizedType friendTypeAsSeenFromDad = (ParameterizedType) env.getEnvironment( Dad.class ).bind(
 				friendType
 		);
 
 		Class friendClass = (Class) friendTypeAsSeenFromDad.getRawType();
-		Type returnType = friendClass.getMethod( "embeddedProperty", new Class[0] ).getGenericReturnType();
+		Type returnType = friendClass.getMethod( "embeddedProperty" ).getGenericReturnType();
 
 		ParameterizedType boundType = (ParameterizedType) env.getEnvironment( friendTypeAsSeenFromDad ).bind(
 				returnType

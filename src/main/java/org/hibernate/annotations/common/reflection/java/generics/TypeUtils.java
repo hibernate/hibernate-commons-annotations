@@ -82,6 +82,7 @@ public class TypeUtils {
 	public static Class<? extends Collection> getCollectionClass(Type type) {
 		return new TypeSwitch<Class<? extends Collection>>() {
 			@Override
+			@SuppressWarnings("unchecked")
 			public Class<? extends Collection> caseClass(Class clazz) {
 				return isCollectionClass( clazz ) ? (Class<? extends Collection>) clazz : null;
 			}
@@ -149,6 +150,7 @@ public class TypeUtils {
 		return true;
 	}
 
+	@SuppressWarnings("EqualsBetweenInconvertibleTypes")
 	public static boolean isVoid(Type type) {
 		return void.class.equals( type );
 	}

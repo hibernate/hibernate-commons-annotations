@@ -25,10 +25,7 @@ package org.hibernate.annotations.common.util;
 
 /**
  * @author Emmanuel Bernard
- *
- * @deprecated Deprecated in favor of {@link org.hibernate.annotations.common.reflection.ClassLoaderDelegate}
  */
-@Deprecated
 public final class ReflectHelper {
 
 	/**
@@ -47,7 +44,10 @@ public final class ReflectHelper {
 	 * @param caller The class from which this call originated (in order to access that class's loader).
 	 * @return The class reference.
 	 * @throws ClassNotFoundException From {@link Class#forName(String, boolean, ClassLoader)}.
+	 *
+	 * @deprecated Deprecated in favor of {@link org.hibernate.annotations.common.reflection.ClassLoaderDelegate}
 	 */
+	@Deprecated
 	public static Class classForName(String name, Class caller) throws ClassNotFoundException {
 		try {
 			ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
