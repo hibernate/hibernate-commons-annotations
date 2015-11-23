@@ -81,5 +81,13 @@ public abstract interface XMember extends XAnnotatedElement {
 
 	public Object invoke(Object target, Object... parameters);
 
+	/**
+	 * Invoke the method with no parameters.
+	 * Same as {@link #invoke(Object, Object...)}.
+	 * @param target
+	 * @return
+	 */
+	public Object invoke(Object target);
+
 	boolean isTypeResolved();
 }

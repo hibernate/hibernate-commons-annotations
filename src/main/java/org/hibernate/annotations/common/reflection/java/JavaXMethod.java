@@ -35,7 +35,9 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
 /**
  * @author Emmanuel Bernard
  */
-public class JavaXMethod extends JavaXMember implements XMethod {
+final public class JavaXMethod extends JavaXMember implements XMethod {
+
+	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	static JavaXMethod create(Member member, TypeEnvironment context, JavaReflectionManager factory) {
 		final Type propType = typeOf( member, context );
@@ -48,10 +50,17 @@ public class JavaXMethod extends JavaXMember implements XMethod {
 		assert member instanceof Method;
 	}
 
+	@Override
 	public String getName() {
 		return getMember().getName();
 	}
 
+	@Override
+	public Object invoke(Object target) {
+		return invoke( target, EMPTY_ARRAY );
+	}
+
+	@Override
 	public Object invoke(Object target, Object... parameters) {
 		try {
 			return ( (Method) getMember() ).invoke( target, parameters );

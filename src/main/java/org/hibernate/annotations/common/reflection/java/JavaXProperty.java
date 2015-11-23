@@ -29,7 +29,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import org.hibernate.annotations.common.reflection.XClass;
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment;
 
@@ -37,7 +36,9 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
  * @author Paolo Perrotta
  * @author Davide Marchignoli
  */
-class JavaXProperty extends JavaXMember implements XProperty {
+final class JavaXProperty extends JavaXMember implements XProperty {
+
+	private static final Object[] EMPTY_ARRAY = new Object[0];
 
 	static JavaXProperty create(Member member, final TypeEnvironment context, final JavaReflectionManager factory) {
 		final Type propType = typeOf( member, context );
@@ -67,13 +68,13 @@ class JavaXProperty extends JavaXMember implements XProperty {
 	}
 
 	@Override
-	public Object invoke(Object target, Object... parameters) {
-		if ( parameters.length != 0 ) {
-			throw new IllegalArgumentException( "An XProperty cannot have invoke parameters" );
-		}
+	public Object invoke(Object target) {
+		//Implementation note: only #invoke(Object target, Object... parameters)
+		//existed until HCANN 5.0.0.Final, but it turned out to be a performance issue as that would cause
+		//each invocation to allocate an empty array to pass as vararg.
 		try {
 			if ( getMember() instanceof Method ) {
-				return ( (Method) getMember() ).invoke( target );
+				return ( (Method) getMember() ).invoke( target, EMPTY_ARRAY );
 			}
 			else {
 				return ( (Field) getMember() ).get( target );
@@ -88,6 +89,14 @@ class JavaXProperty extends JavaXMember implements XProperty {
 		catch (Exception e) {
 			throw new IllegalStateException( "Unable to invoke " + getName(), e );
 		}
+	}
+
+	@Override
+	public Object invoke(Object target, Object... parameters) {
+		if ( parameters.length != 0 ) {
+			throw new IllegalArgumentException( "An XProperty cannot have invoke parameters" );
+		}
+		return invoke( target );
 	}
 
 	@Override
