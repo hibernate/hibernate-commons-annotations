@@ -46,7 +46,7 @@ apply plugin: 'idea'
 apply plugin: 'eclipse'
 
 group = 'org.hibernate.common'
-version = '5.0.1.Final'
+version = '5.0.2-SNAPSHOT'
 
 buildDir = "target"
 
