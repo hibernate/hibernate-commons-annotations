@@ -160,7 +160,7 @@ publishing {
                     }
                     licenses {
                         license {
-                            name 'GNU Lesser General Public License'
+                            name 'GNU Lesser General Public License v2.1 or later'
                             url 'http://www.gnu.org/licenses/lgpl-2.1.html'
                             comments 'See discussion at http://hibernate.org/license for more details.'
                             distribution 'repo'

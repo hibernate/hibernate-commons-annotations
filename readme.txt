@@ -42,4 +42,4 @@ Notes
 If you want to contribute, go to http://www.hibernate.org/
 
 This software and its documentation are distributed under the terms of the
-FSF Lesser Gnu Public License (see lgpl.txt).
+GNU Lesser General Public License v2.1 or later (see lgpl.txt).
