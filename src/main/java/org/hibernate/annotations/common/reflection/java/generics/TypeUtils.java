@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Paolo Perrotta
@@ -92,12 +93,7 @@ public class TypeUtils {
 	}
 
 	private static boolean isCollectionClass(Class<?> clazz) {
-		return clazz == Collection.class
-				|| clazz == java.util.List.class
-				|| clazz == java.util.Set.class
-				|| clazz == java.util.Map.class
-				|| clazz == java.util.SortedSet.class // extension to the specs
-				|| clazz == java.util.SortedMap.class; // extension to the specs
+		return Collection.class.isAssignableFrom( clazz ) || Map.class.isAssignableFrom( clazz );
 	}
 
 	public static boolean isSimple(Type type) {
