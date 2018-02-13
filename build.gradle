@@ -37,7 +37,6 @@ apply plugin: 'java'
 apply plugin: 'osgi'
 
 apply plugin: 'version-injection'
-apply plugin: 'org.hibernate.build.gradle.animalSniffer'
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -50,7 +49,7 @@ version = '6.0.0-SNAPSHOT'
 
 buildDir = "target"
 
-ext.javaLanguageLevel = "1.6"
+ext.javaLanguageLevel = "1.8"
 targetCompatibility = project.javaLanguageLevel
 sourceCompatibility = project.javaLanguageLevel
 
@@ -67,8 +66,6 @@ dependencies {
     jbossLoggingTool 'org.jboss.logging:jboss-logging-processor:2.1.0.Final'
 
     testCompile( 'junit:junit:3.8.1' )
-
-    animalSnifferSignature 'org.codehaus.mojo.signature:java16:1.0@signature'
 }
 
 // create a special 'compile' task that performs all the tasks normally associated with compiling a project

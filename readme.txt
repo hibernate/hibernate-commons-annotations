@@ -1,16 +1,19 @@
 Hibernate Commons Annotations
 ==================================================
-Version: @version@, @releasedate@
 
 Description
 -----------
 
-Hibernate Commons Annotations is a utility project used by annotations based
-Hibernate sub-projects.
+Hibernate Commons Annotations is a utility project used by several Hibernate projects;
+as a user of Hibernate libraries you probably are not going to use this directly.
+
 It's first scope is to support Java Generics type discovery.
 It's second scope is to support Java Annotations overriding through XML files
-(mainly but not conceptually limited to)
+(mainly but not conceptually limited to).
 
+Requirements
+------------
+Since version 6 this project requires Java 8.
 
 Instructions
 ------------
@@ -23,17 +26,20 @@ Contact
 
 Latest Documentation:
 
-This project has no documentation per se, because of it's internal use focus.
+This project has no documentation per se, because of its internal use focus.
 Please ask questions to the technical support forum.
 
 Bug Reports:
 
-   Hibernate JIRA (preferred)
-   hibernate-devel@lists.sourceforge.net
+   Hibernate JIRA (preferred): https://hibernate.atlassian.net
 
-Free Technical Support:
+Or contact us via chat, mailing list, etc as described on:
 
-   http://forum.hibernate.org (http://forum.hibernate.org/viewforum.php?f=9)
+   http://hibernate.org/community/
+
+Free, volunteers based technical support:
+
+   https://discourse.hibernate.org
 
 
 Notes
