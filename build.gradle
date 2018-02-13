@@ -112,6 +112,9 @@ jar {
 
         instruction 'Bundle-Vendor', 'Hibernate.org'
 
+        // Java 9 module name
+        instruction 'Automatic-Module-Name', 'org.hibernate.commons.annotations'
+
         OsgiManifestPackagingInfo.buildInfo( project ).applyTo( manifest )
 
         instruction 'Implementation-Url', 'http://hibernate.org'
