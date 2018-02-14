@@ -51,7 +51,7 @@ public abstract class JavaXMember extends JavaXAnnotatedElement implements XMemb
 
 	public abstract String getName();
 
-	protected Type getJavaType() {
+	public Type getJavaType() {
 		return env.bind( type );
 	}
 
