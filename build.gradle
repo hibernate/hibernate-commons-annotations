@@ -1,16 +1,6 @@
 buildscript {
     repositories {
         mavenCentral()
-        mavenLocal()
-
-        maven {
-            name 'jboss-nexus'
-            url "http://repository.jboss.org/nexus/content/groups/public/"
-        }
-        maven {
-            name "jboss-snapshots"
-            url "http://snapshots.jboss.org/maven2/"
-        }
     }
     dependencies {
         classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
@@ -21,16 +11,6 @@ buildscript {
 
 repositories {
     mavenCentral()
-    mavenLocal()
-
-    maven {
-        name 'jboss-nexus'
-        url "http://repository.jboss.org/nexus/content/groups/public/"
-    }
-    maven {
-        name "jboss-snapshots"
-        url "http://snapshots.jboss.org/maven2/"
-    }
 }
 
 apply plugin: 'java'
@@ -174,12 +154,6 @@ publishing {
                             organizationUrl 'http://hibernate.org'
                         }
                     }
-                }
-
-                // TEMPORARY : currently Gradle Publishing feature is exporting dependencies as 'runtime' scope,
-                //      rather than 'compile'; fix that.
-                asNode().dependencies[0].dependency.each {
-                    it.scope[0].value = 'compile'
                 }
             }
         }
