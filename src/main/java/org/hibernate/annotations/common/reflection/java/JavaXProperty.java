@@ -6,7 +6,6 @@
  */
 package org.hibernate.annotations.common.reflection.java;
 
-import java.beans.Introspector;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -38,15 +37,30 @@ final class JavaXProperty extends JavaXMember implements XProperty {
 		String fullName = getMember().getName();
 		if ( getMember() instanceof Method ) {
 			if ( fullName.startsWith( "get" ) ) {
-				return Introspector.decapitalize( fullName.substring( "get".length() ) );
+				return decapitalize( fullName.substring( "get".length() ) );
 			}
 			if ( fullName.startsWith( "is" ) ) {
-				return Introspector.decapitalize( fullName.substring( "is".length() ) );
+				return decapitalize( fullName.substring( "is".length() ) );
 			}
 			throw new RuntimeException( "Method " + fullName + " is not a property getter" );
 		}
 		else {
 			return fullName;
+		}
+	}
+
+	// See conventions expressed by https://docs.oracle.com/javase/7/docs/api/java/beans/Introspector.html#decapitalize(java.lang.String)
+	private static String decapitalize(String name) {
+		if (name != null && name.length() != 0) {
+			if (name.length() > 1 && Character.isUpperCase(name.charAt(1))) {
+				return name;
+			} else {
+				char[] chars = name.toCharArray();
+				chars[0] = Character.toLowerCase(chars[0]);
+				return new String(chars);
+			}
+		} else {
+			return name;
 		}
 	}
 
