@@ -222,7 +222,9 @@ class OsgiManifestPackagingInfo {
 
     public static OsgiManifestPackagingInfo buildInfo(Project project) {
         final String exportPackageVersion = project.version.replaceAll( "-SNAPSHOT", "" )
-                .replaceAll( ".Final", "" );
+                .replaceAll( ".Final-redhat-", "DO_NOT_REPLACE" )
+                .replaceAll( ".Final", "" )
+                .replaceAll( "DO_NOT_REPLACE", ".Final-redhat-" );
 
         final Set<String> exportPackageInstructionSet = new HashSet<String>()
         final Set<String> privatePackageInstructionSet = new HashSet<String>()
