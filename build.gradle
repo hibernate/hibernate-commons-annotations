@@ -179,6 +179,10 @@ publishing {
     }
 }
 
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 
 // OSGi manifest helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -250,12 +254,3 @@ class OsgiManifestPackagingInfo {
         }
     }
 }
-
-
-
-// Wrapper ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.4.1'
-}
-
