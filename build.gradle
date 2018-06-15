@@ -29,7 +29,7 @@ version = '6.0.0-SNAPSHOT'
 
 buildDir = "target"
 
-ext.javaLanguageLevel = "1.8"
+ext.javaLanguageLevel = '1.8'
 targetCompatibility = project.javaLanguageLevel
 sourceCompatibility = project.javaLanguageLevel
 
@@ -83,7 +83,7 @@ jar {
         mainAttributes(
                 'Main-Class': 'org.hibernate.annotations.common.Version'
         )
-
+        // See https://discuss.gradle.org/t/balancing-deprecation-of-sourcesetoutput-classesdir-and-other-parts-of-gradle-that-only-accept-a-dir-file/25283
         classesDir = sourceSets.main.output.classesDir
         classpath = configurations.runtime
 
@@ -103,9 +103,8 @@ jar {
 
 // publishing ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-task sourcesJar(type: Jar, dependsOn: compileJava) {
-    from sourceSets.main.allSource
-    classifier = 'sources'
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
 }
 
 publishing {
@@ -113,46 +112,46 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
 
-            artifact sourcesJar {
-                classifier "sources"
+            artifact sourceJar {
+                classifier 'sources'
             }
 
-            pom.withXml {
-                // append additional metadata
-                asNode().children().last() + {
-                    resolveStrategy = Closure.DELEGATE_FIRST
+            pom {
+                name = 'Hibernate Commons Annotations'
+                description = 'Common reflection code used in support of annotation processing'
+                url = 'http://hibernate.org'
 
-                    name 'Hibernate Commons Annotations'
-                    description 'Common reflection code used in support of annotation processing'
-                    url 'http://hibernate.org'
-                    organization {
-                        name 'Hibernate.org'
-                        url 'http://hibernate.org'
+                organization {
+                    name = 'Hibernate.org'
+                    url = 'http://hibernate.org'
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU Library General Public License v2.1 or later'
+                        url = 'http://www.opensource.org/licenses/LGPL-2.1'
+                        comments = 'See discussion at http://hibernate.org/community/license/ for more details.'
+                        distribution = 'repo'
                     }
-                    issueManagement {
-                        system 'jira'
-                        url 'https://hibernate.atlassian.net/browse/HCANN'
-                    }
-                    scm {
-                        url 'http://github.com/hibernate/hibernate-commons-annotations'
-                        connection 'scm:git:http://github.com/hibernate/hibernate-commons-annotations.git'
-                        developerConnection 'scm:git:git@github.com:hibernate/hibernate-commons-annotations.git'
-                    }
-                    licenses {
-                        license {
-                            name 'GNU Lesser General Public License v2.1 or later'
-                            url 'http://www.gnu.org/licenses/lgpl-2.1.html'
-                            comments 'See discussion at http://hibernate.org/license for more details.'
-                            distribution 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id 'hibernate-team'
-                            name 'The Hibernate Development Team'
-                            organization 'Hibernate.org'
-                            organizationUrl 'http://hibernate.org'
-                        }
+                }
+
+                scm {
+                    url = 'http://github.com/hibernate/hibernate-commons-annotations'
+                    connection = 'scm:git:http://github.com/hibernate/hibernate-commons-annotations.git'
+                    developerConnection = 'scm:git:git@github.com:hibernate/hibernate-commons-annotations.git'
+                }
+
+                issueManagement {
+                    system = 'jira'
+                    url = 'https://hibernate.atlassian.net/browse/HCANN'
+                }
+
+                developers {
+                    developer {
+                        id = 'hibernate-team'
+                        name = 'The Hibernate Development Team'
+                        organization = 'Hibernate.org'
+                        organizationUrl = 'http://hibernate.org'
                     }
                 }
             }
@@ -169,12 +168,6 @@ publishing {
                 name 'jboss-releases-repository'
                 url 'https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/'
             }
-        }
-    }
-
-    model {
-        tasks.generatePomFileForMavenJavaPublication {
-            destination = file( "$buildDir/generated-pom.xml" )
         }
     }
 }
