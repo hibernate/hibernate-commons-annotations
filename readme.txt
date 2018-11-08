@@ -13,7 +13,7 @@ It's second scope is to support Java Annotations overriding through XML files
 
 Requirements
 ------------
-Since version 6 this project requires Java 8.
+Since version 5.1 this project requires Java 8.
 
 Instructions
 ------------
