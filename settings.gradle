@@ -9,3 +9,5 @@ if ( !JavaVersion.current().java8Compatible ) {
 }
 
 enableFeaturePreview('STABLE_PUBLISHING')
+
+rootProject.name = 'hibernate-commons-annotations'
