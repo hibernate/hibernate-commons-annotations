@@ -59,7 +59,7 @@ public abstract class JavaXMember extends JavaXAnnotatedElement implements XMemb
 		return env;
 	}
 
-	protected Member getMember() {
+	public Member getMember() {
 		return (Member) toAnnotatedElement();
 	}
 
