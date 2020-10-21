@@ -17,62 +17,12 @@ import java.util.Map;
  * @author Davide Marchignoli
  */
 public interface ReflectionManager {
-	/**
-	 * Allows injection of a ClassLoaderDelegate into the ReflectionManager
-	 *
-	 * @param delegate The ClassLoaderDelegate to use
-	 */
-	public void injectClassLoaderDelegate(ClassLoaderDelegate delegate);
-
-	/**
-	 * Access to the ClassLoaderDelegate currently associated with this ReflectionManager
-	 *
-	 * @return The current ClassLoaderDelegate
-	 */
-	public ClassLoaderDelegate getClassLoaderDelegate();
 
 	public <T> XClass toXClass(Class<T> clazz);
 
 	public Class toClass(XClass xClazz);
 
 	public Method toMethod(XMethod method);
-
-	/**
-	 * Deprecated; do not use.
-	 *
-	 * @deprecated Instead use:<ul>
-	 *     <li>
-	 *         {@link #toXClass(Class)} after resolving the Class yourself
-	 *     </li>
-	 *     <li>
-	 *         {@link #classForName(String)} after having injected the proper ClassLoaderDelegate to use via
-	 *         {@link #injectClassLoaderDelegate}
-	 *     </li>
-	 * </ul>
-	 *
-	 * @param name
-	 * @param caller
-	 * @param <T>
-	 * @return
-	 * @throws ClassNotFoundException
-	 */
-	@Deprecated
-	public <T> XClass classForName(String name, Class<T> caller) throws ClassNotFoundException;
-
-	/**
-	 * Given the name of a Class, retrieve the XClass representation.
-	 * <p/>
-	 * Uses ClassLoaderDelegate (via {@link #getClassLoaderDelegate()}) to resolve the Class reference
-	 *
-	 * @param name The name of the Class to load (as an XClass)
-	 *
-	 * @return The XClass instance
-	 *
-	 * @throws ClassLoadingException Indicates a problem resolving the Class; see {@link ClassLoaderDelegate#classForName}
-	 */
-	public XClass classForName(String name) throws ClassLoadingException;
-
-	public XPackage packageForName(String packageName) throws ClassNotFoundException;
 
 	public <T> boolean equals(XClass class1, Class<T> class2);
 

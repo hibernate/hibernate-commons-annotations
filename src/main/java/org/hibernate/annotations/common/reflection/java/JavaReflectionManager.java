@@ -14,24 +14,20 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.annotations.common.Version;
 import org.hibernate.annotations.common.reflection.AnnotationReader;
-import org.hibernate.annotations.common.reflection.ClassLoaderDelegate;
-import org.hibernate.annotations.common.reflection.ClassLoadingException;
+import org.hibernate.annotations.common.reflection.MetadataProvider;
+import org.hibernate.annotations.common.reflection.MetadataProviderInjector;
 import org.hibernate.annotations.common.reflection.ReflectionManager;
 import org.hibernate.annotations.common.reflection.XClass;
 import org.hibernate.annotations.common.reflection.XMethod;
 import org.hibernate.annotations.common.reflection.XPackage;
 import org.hibernate.annotations.common.reflection.XProperty;
-import org.hibernate.annotations.common.reflection.MetadataProviderInjector;
-import org.hibernate.annotations.common.reflection.MetadataProvider;
 import org.hibernate.annotations.common.reflection.java.generics.IdentityTypeEnvironment;
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment;
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironmentFactory;
 import org.hibernate.annotations.common.reflection.java.generics.TypeSwitch;
 import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
-import org.hibernate.annotations.common.Version;
-import org.hibernate.annotations.common.util.ReflectHelper;
-import org.hibernate.annotations.common.util.StandardClassLoaderDelegateImpl;
 import org.hibernate.annotations.common.util.impl.LoggerFactory;
 
 /**
@@ -43,7 +39,6 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  */
 public class JavaReflectionManager implements ReflectionManager, MetadataProviderInjector {
 	private MetadataProvider metadataProvider;
-	private ClassLoaderDelegate classLoaderDelegate = StandardClassLoaderDelegateImpl.INSTANCE;
 
 	static {
 		LoggerFactory.make( Version.class.getName() ).version( Version.getVersionString() );
@@ -58,21 +53,6 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 
 	public void setMetadataProvider(MetadataProvider metadataProvider) {
 		this.metadataProvider = metadataProvider;
-	}
-
-	@Override
-	public void injectClassLoaderDelegate(ClassLoaderDelegate delegate) {
-		if ( delegate == null ) {
-			this.classLoaderDelegate = StandardClassLoaderDelegateImpl.INSTANCE;
-		}
-		else {
-			this.classLoaderDelegate = delegate;
-		}
-	}
-
-	@Override
-	public ClassLoaderDelegate getClassLoaderDelegate() {
-		return classLoaderDelegate;
 	}
 
 	private static class TypeKey extends Pair<Type, TypeEnvironment> {
@@ -113,22 +93,6 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 			throw new IllegalArgumentException( "XMethod not coming from this ReflectionManager implementation" );
 		}
 		return (Method) ( (JavaXAnnotatedElement) xMethod ).toAnnotatedElement();
-	}
-
-	@Override
-	@Deprecated
-	@SuppressWarnings("deprecation")
-	public XClass classForName(String name, Class caller) throws ClassNotFoundException {
-		return toXClass( ReflectHelper.classForName( name, caller ) );
-	}
-
-	@Override
-	public XClass classForName(String name) throws ClassLoadingException {
-		return toXClass( getClassLoaderDelegate().classForName( name ) );
-	}
-
-	public XPackage packageForName(String packageName) throws ClassNotFoundException {
-		return getXAnnotatedElement( getClassLoaderDelegate().classForName( packageName + ".package-info" ).getPackage() );
 	}
 
 	XClass toXClass(Type t, final TypeEnvironment context) {
