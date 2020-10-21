@@ -17,7 +17,7 @@ import org.hibernate.annotations.common.reflection.AnnotationReader;
  * @author Paolo Perrotta
  * @author Davide Marchignoli
  */
-class JavaAnnotationReader implements AnnotationReader {
+final class JavaAnnotationReader implements AnnotationReader {
 
 	protected final AnnotatedElement element;
 

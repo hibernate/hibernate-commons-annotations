@@ -43,7 +43,7 @@ import java.lang.reflect.WildcardType;
  * @author Paolo Perrotta
  * @return a type where the generic arguments have been replaced by raw classes.
  */
-class ApproximatingTypeEnvironment implements TypeEnvironment {
+final class ApproximatingTypeEnvironment implements TypeEnvironment {
 
 	public Type bind(final Type type) {
 		Type result = fineApproximation( type );

@@ -21,10 +21,9 @@ import java.util.Map;
  * @author Paolo Perrotta
  * @author Davide Marchignoli
  */
-public class AnnotationDescriptor {
+public final class AnnotationDescriptor {
 
 	private final Class<? extends Annotation> type;
-
 	private final Map<String, Object> elements = new HashMap<String, Object>();
 
 	public AnnotationDescriptor(Class<? extends Annotation> annotationType) {

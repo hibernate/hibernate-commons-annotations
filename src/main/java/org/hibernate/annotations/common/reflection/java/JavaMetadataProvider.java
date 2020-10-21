@@ -16,7 +16,7 @@ import org.hibernate.annotations.common.reflection.AnnotationReader;
 /**
  * @author Emmanuel Bernard
 */
-public class JavaMetadataProvider implements MetadataProvider {
+public final class JavaMetadataProvider implements MetadataProvider {
 
 	public Map<Object, Object> getDefaults() {
 		return Collections.emptyMap();

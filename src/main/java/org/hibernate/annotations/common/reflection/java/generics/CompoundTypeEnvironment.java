@@ -14,12 +14,10 @@ import java.lang.reflect.Type;
  * @author Davide Marchignoli
  * @author Paolo Perrotta
  */
-public class CompoundTypeEnvironment implements TypeEnvironment {
+public final class CompoundTypeEnvironment implements TypeEnvironment {
 
 	private final TypeEnvironment f;
-
 	private final TypeEnvironment g;
-    
     private final int hashCode;
 
     public static TypeEnvironment create(TypeEnvironment f, TypeEnvironment g) {
@@ -33,7 +31,7 @@ public class CompoundTypeEnvironment implements TypeEnvironment {
     private CompoundTypeEnvironment(TypeEnvironment f, TypeEnvironment g) {
 		this.f = f;
 		this.g = g;
-        hashCode = doHashCode();
+        this.hashCode = doHashCode( f, g );
     }
 
 	public Type bind(Type type) {
@@ -50,14 +48,15 @@ public class CompoundTypeEnvironment implements TypeEnvironment {
 
         if ( !f.equals( that.f ) ) return false;
         return g.equals( that.g );
-
     }
 
     private boolean differentHashCode(CompoundTypeEnvironment that) {
         return hashCode != that.hashCode;
     }
 
-    private int doHashCode() {
+    private static int doHashCode(
+			TypeEnvironment f,
+			TypeEnvironment g) {
 		int result;
 		result = f.hashCode();
 		result = 29 * result + g.hashCode();

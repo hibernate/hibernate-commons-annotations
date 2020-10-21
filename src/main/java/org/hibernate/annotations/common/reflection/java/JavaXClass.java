@@ -24,7 +24,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
  * @author Paolo Perrotta
  * @author Davide Marchignoli
  */
-class JavaXClass extends JavaXAnnotatedElement implements XClass {
+final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 
 	private final TypeEnvironment context;
     private final Class clazz;
