@@ -19,7 +19,7 @@ import java.lang.reflect.Proxy;
  * @author Davide Marchignoli
  * @see AnnotationProxy
  */
-public class AnnotationFactory {
+public final class AnnotationFactory {
 
 	/**
 	 * Creates an Annotation proxy for the given annotation descriptor.

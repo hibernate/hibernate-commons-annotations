@@ -39,7 +39,7 @@ import java.util.TreeSet;
  * @author Davide Marchignoli
  * @see java.lang.annotation.Annotation
  */
-public class AnnotationProxy implements Annotation, InvocationHandler {
+public final class AnnotationProxy implements Annotation, InvocationHandler {
 
 	private final Class<? extends Annotation> annotationType;
 	//FIXME it's probably better to use String as a key rather than Method
@@ -49,10 +49,12 @@ public class AnnotationProxy implements Annotation, InvocationHandler {
 
 	public AnnotationProxy(AnnotationDescriptor descriptor) {
 		this.annotationType = descriptor.type();
-		values = getAnnotationValues( descriptor );
+		this.values = getAnnotationValues( annotationType, descriptor );
 	}
 
-	private Map<Method, Object> getAnnotationValues(AnnotationDescriptor descriptor) {
+	private static Map<Method, Object> getAnnotationValues(
+			Class<? extends Annotation> annotationType,
+			AnnotationDescriptor descriptor) {
 		Map<Method, Object> result = new HashMap<Method, Object>();
 		int processedValuesFromDescriptor = 0;
 		for ( Method m : annotationType.getDeclaredMethods() ) {

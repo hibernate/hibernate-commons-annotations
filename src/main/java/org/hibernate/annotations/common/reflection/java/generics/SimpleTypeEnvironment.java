@@ -19,7 +19,7 @@ import java.util.HashMap;
  * @author Davide Marchignoli
  * @author Paolo Perrotta
  */
-class SimpleTypeEnvironment extends HashMap<Type, Type> implements TypeEnvironment {
+final class SimpleTypeEnvironment extends HashMap<Type, Type> implements TypeEnvironment {
 
 	private static final long serialVersionUID = 1L;
     

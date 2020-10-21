@@ -19,7 +19,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeSwitch;
  * @author Emmanuel Bernard
  * @author Paolo Perrotta
  */
-class JavaXArrayType extends JavaXType {
+final class JavaXArrayType extends JavaXType {
 
 	public JavaXArrayType(Type type, TypeEnvironment context, JavaReflectionManager factory) {
 		super( type, context, factory );

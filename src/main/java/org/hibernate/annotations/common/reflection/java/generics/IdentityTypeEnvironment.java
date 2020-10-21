@@ -14,7 +14,7 @@ import java.lang.reflect.Type;
  * @author Davide Marchignoli
  * @author Paolo Perrotta
  */
-public class IdentityTypeEnvironment implements TypeEnvironment {
+public final class IdentityTypeEnvironment implements TypeEnvironment {
 
 	public static final TypeEnvironment INSTANCE = new IdentityTypeEnvironment();
 
