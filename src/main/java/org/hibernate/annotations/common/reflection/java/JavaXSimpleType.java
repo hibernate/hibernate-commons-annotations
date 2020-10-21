@@ -16,7 +16,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
  * @author Emmanuel Bernard
  * @author Paolo Perrotta
  */
-class JavaXSimpleType extends JavaXType {
+final class JavaXSimpleType extends JavaXType {
 
 	public JavaXSimpleType(Type type, TypeEnvironment context, JavaReflectionManager factory) {
 		super( type, context, factory );

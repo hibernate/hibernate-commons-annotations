@@ -24,7 +24,7 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
  * @author Paolo Perrotta
  */
 @SuppressWarnings("unchecked")
-class JavaXCollectionType extends JavaXType {
+final class JavaXCollectionType extends JavaXType {
 
 	public JavaXCollectionType(Type type, TypeEnvironment context, JavaReflectionManager factory) {
 		super( type, context, factory );
