@@ -8,7 +8,9 @@ package org.hibernate.annotations.common.reflection;
 
 /**
  * @author Steve Ebersole
+ * @deprecated This will be removed with no replacement: it will no longer be needed.
  */
+@Deprecated
 public class ClassLoadingException extends RuntimeException {
 	public ClassLoadingException(String message) {
 		super( message );

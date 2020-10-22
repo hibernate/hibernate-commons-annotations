@@ -14,7 +14,9 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
 
 /**
  * @author Steve Ebersole
+ * @deprecated This will be removed with no replacement: it will no longer be needed.
  */
+@Deprecated
 public class StandardClassLoaderDelegateImpl implements ClassLoaderDelegate {
 	/**
 	 * Singleton access
