@@ -15,7 +15,9 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  *
  * @author Gavin King
  * @auhor Emmanuel Bernard
+ * @deprecated This is an old class which will be removed; this project no longer uses it. No specific alternative is recommended.
  */
+@Deprecated
 public class AssertionFailure extends RuntimeException {
 
 	private static final Log log = LoggerFactory.make( AssertionFailure.class.getName() );

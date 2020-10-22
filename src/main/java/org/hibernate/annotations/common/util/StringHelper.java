@@ -12,10 +12,12 @@ import java.util.StringTokenizer;
 
 
 /**
- * Complete duplication of {@link org.hibernate.util.StringHelper}.
+ * This project no longer uses this class.
+ * @deprecated This will be removed.
  *
  * @author Emmanuel Bernard
  */
+@Deprecated
 public final class StringHelper {
 
 	private static final int ALIAS_TRUNCATE_LENGTH = 10;
