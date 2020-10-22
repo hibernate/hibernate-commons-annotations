@@ -36,6 +36,7 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  * @author Paolo Perrotta
  * @author Davide Marchignoli
  * @author Emmanuel Bernard
+ * @author Sanne Grinovero
  */
 public class JavaReflectionManager implements ReflectionManager, MetadataProviderInjector {
 	private MetadataProvider metadataProvider;
@@ -200,5 +201,14 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
     public Map getDefaults() {
         return getMetadataProvider().getDefaults();
     }
+
+	@Override
+	public void reset() {
+		this.xClasses.clear();
+		this.packagesToXPackages.clear();
+		this.xProperties.clear();
+		this.xMethods.clear();
+		this.metadataProvider.reset();
+	}
 
 }
