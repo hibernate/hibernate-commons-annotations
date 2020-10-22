@@ -153,7 +153,13 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		}.doSwitch( context.bind( t ) );
 	}
 
+	@Deprecated
 	XPackage getXAnnotatedElement(Package pkg) {
+		return toXPackage( pkg );
+	}
+
+	@Override
+	public XPackage toXPackage(Package pkg) {
 		JavaXPackage xPackage = packagesToXPackages.get( pkg );
 		if ( xPackage == null ) {
 			xPackage = new JavaXPackage( pkg, this );

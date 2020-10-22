@@ -74,6 +74,8 @@ public interface ReflectionManager {
 
 	public XPackage packageForName(String packageName) throws ClassNotFoundException;
 
+	public XPackage toXPackage(Package pkg);
+
 	public <T> boolean equals(XClass class1, Class<T> class2);
 
     public AnnotationReader buildAnnotationReader(AnnotatedElement annotatedElement);
