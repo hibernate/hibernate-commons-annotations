@@ -112,7 +112,6 @@ public final class AnnotationProxy implements Annotation, InvocationHandler {
 					}
 				}
 		);
-		//List<Method> result = new LinkedList<Method>();
 		result.addAll( values.keySet() );
 		return result;
 	}
