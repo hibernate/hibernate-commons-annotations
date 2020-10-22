@@ -12,6 +12,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Binds formal type arguments (typically T, E, etc.) to actual types.
@@ -19,11 +20,11 @@ import java.util.HashMap;
  * @author Davide Marchignoli
  * @author Paolo Perrotta
  */
-final class SimpleTypeEnvironment extends HashMap<Type, Type> implements TypeEnvironment {
+final class SimpleTypeEnvironment implements TypeEnvironment {
 
-	private static final long serialVersionUID = 1L;
-    
-    private final TypeSwitch<Type> substitute = new TypeSwitch<Type>() {
+	private final HashMap<Type, Type> typeMap = new HashMap<>();
+
+	private final TypeSwitch<Type> substitute = new TypeSwitch<Type>() {
 		@Override
 		public Type caseClass(Class classType) {
 			return classType;
@@ -67,10 +68,11 @@ final class SimpleTypeEnvironment extends HashMap<Type, Type> implements TypeEnv
 
 		@Override
 		public Type caseTypeVariable(TypeVariable typeVariable) {
-            if ( !containsKey( typeVariable )) {
+			final Type type = typeMap.get( typeVariable );
+			if ( type == null ) {
             	return typeVariable;
             }
-            return get( typeVariable );
+            return type;
 		}
 
 		@Override
@@ -80,8 +82,8 @@ final class SimpleTypeEnvironment extends HashMap<Type, Type> implements TypeEnv
 	};
 
 	public SimpleTypeEnvironment(Type[] formalTypeArgs, Type[] actualTypeArgs) {
-        for (int i = 0; i < formalTypeArgs.length; i++) {
-            put( formalTypeArgs[i], actualTypeArgs[i] );
+		for ( int i = 0; i < formalTypeArgs.length; i++ ) {
+			typeMap.put( formalTypeArgs[i], actualTypeArgs[i] );
         }
 	}
 
@@ -96,4 +98,22 @@ final class SimpleTypeEnvironment extends HashMap<Type, Type> implements TypeEnv
 		}
 		return substTypes;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if ( this == o ) {
+			return true;
+		}
+		if ( o == null || SimpleTypeEnvironment.class != o.getClass() ) {
+			return false;
+		}
+		SimpleTypeEnvironment that = (SimpleTypeEnvironment) o;
+		return Objects.equals( typeMap, that.typeMap );
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash( typeMap );
+	}
+
 }
