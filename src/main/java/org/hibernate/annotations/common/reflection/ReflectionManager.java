@@ -21,14 +21,18 @@ public interface ReflectionManager {
 	 * Allows injection of a ClassLoaderDelegate into the ReflectionManager
 	 *
 	 * @param delegate The ClassLoaderDelegate to use
+	 * @deprecated This will be removed with no replacement: it will no longer be needed.
 	 */
+	@Deprecated
 	public void injectClassLoaderDelegate(ClassLoaderDelegate delegate);
 
 	/**
 	 * Access to the ClassLoaderDelegate currently associated with this ReflectionManager
 	 *
 	 * @return The current ClassLoaderDelegate
+	 * @deprecated This will be removed with no replacement: it will no longer be needed.
 	 */
+	@Deprecated
 	public ClassLoaderDelegate getClassLoaderDelegate();
 
 	public <T> XClass toXClass(Class<T> clazz);
@@ -55,6 +59,7 @@ public interface ReflectionManager {
 	 * @param <T>
 	 * @return
 	 * @throws ClassNotFoundException
+	 * @deprecated This will be removed with no replacement: it will no longer be needed.
 	 */
 	@Deprecated
 	public <T> XClass classForName(String name, Class<T> caller) throws ClassNotFoundException;
@@ -69,9 +74,18 @@ public interface ReflectionManager {
 	 * @return The XClass instance
 	 *
 	 * @throws ClassLoadingException Indicates a problem resolving the Class; see {@link ClassLoaderDelegate#classForName}
+	 * @deprecated This will be removed with no replacement: it will no longer be needed.
 	 */
+	@Deprecated
 	public XClass classForName(String name) throws ClassLoadingException;
 
+	/**
+	 * @deprecated This will be removed with no replacement: it will no longer be needed.
+	 * @param packageName
+	 * @return
+	 * @throws ClassNotFoundException
+	 */
+	@Deprecated
 	public XPackage packageForName(String packageName) throws ClassNotFoundException;
 
 	public XPackage toXPackage(Package pkg);

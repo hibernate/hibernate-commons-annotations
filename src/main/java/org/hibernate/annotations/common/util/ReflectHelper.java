@@ -8,7 +8,9 @@ package org.hibernate.annotations.common.util;
 
 /**
  * @author Emmanuel Bernard
+ * @deprecated This will be removed with no replacement: it will no longer be needed.
  */
+@Deprecated
 public final class ReflectHelper {
 
 	/**

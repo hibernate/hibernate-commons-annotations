@@ -10,7 +10,9 @@ package org.hibernate.annotations.common.reflection;
  * Delegate for interacting with {@link ClassLoader} methods.
  *
  * @author Steve Ebersole
+ * @deprecated This will be removed with no replacement: it will no longer be needed.
  */
+@Deprecated
 public interface ClassLoaderDelegate {
 	/**
 	 * Locate a class by name.
