@@ -9,7 +9,7 @@ package org.hibernate.annotations.common.reflection.java;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.common.reflection.Filter;
@@ -81,8 +81,9 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 	}
 
 	private List<XProperty> getDeclaredFieldProperties(Filter filter) {
-		List<XProperty> result = new LinkedList<XProperty>();
-		for ( Field f : toClass().getDeclaredFields() ) {
+		Field[] declaredFields = toClass().getDeclaredFields();
+		List<XProperty> result = new ArrayList<>();
+		for ( Field f : declaredFields ) {
 			if ( ReflectionUtil.isProperty( f, getTypeEnvironment().bind( f.getGenericType() ), filter ) ) {
 				result.add( getFactory().getXProperty( f, getTypeEnvironment() ) );
 			}
@@ -91,8 +92,9 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 	}
 
 	private List<XProperty> getDeclaredMethodProperties(Filter filter) {
-		List<XProperty> result = new LinkedList<XProperty>();
-		for ( Method m : toClass().getDeclaredMethods() ) {
+		List<XProperty> result = new ArrayList<XProperty>();
+		Method[] declaredMethods = toClass().getDeclaredMethods();
+		for ( Method m : declaredMethods ) {
 			if ( ReflectionUtil.isProperty( m, getTypeEnvironment().bind( m.getGenericReturnType() ), filter ) ) {
 				result.add( getFactory().getXProperty( m, getTypeEnvironment() ) );
 			}
@@ -115,8 +117,9 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 	}
 
 	public List<XMethod> getDeclaredMethods() {
-		List<XMethod> result = new LinkedList<XMethod>();
-		for ( Method m : toClass().getDeclaredMethods() ) {
+		Method[] declaredMethods = toClass().getDeclaredMethods();
+		List<XMethod> result = new ArrayList<>( declaredMethods.length );
+		for ( Method m : declaredMethods ) {
 			result.add( getFactory().getXMethod( m, getTypeEnvironment() ) );
 		}
 		return result;
