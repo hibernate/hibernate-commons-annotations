@@ -24,6 +24,8 @@ public interface ReflectionManager {
 
 	public Method toMethod(XMethod method);
 
+	public XPackage toXPackage(Package pkg);
+
 	public <T> boolean equals(XClass class1, Class<T> class2);
 
     public AnnotationReader buildAnnotationReader(AnnotatedElement annotatedElement);
