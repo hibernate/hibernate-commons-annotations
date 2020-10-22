@@ -16,9 +16,8 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
 
 public class TypeUtilsTest extends TestCase {
 
-	TypeEnvironmentFactory env = new TypeEnvironmentFactory();
-	TypeEnvironment dadContext = env.getEnvironment( Dad.class );
-	TypeEnvironment sonContext = env.getEnvironment( Son.class );
+	TypeEnvironment dadContext = TypeEnvironmentFactory.getEnvironment( Dad.class );
+	TypeEnvironment sonContext = TypeEnvironmentFactory.getEnvironment( Son.class );
 
 	public void testAClassIsAlwaysFullyResolved() throws Exception {
 		assertTrue( TypeUtils.isResolved( Dad.class ) );

@@ -17,12 +17,11 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
 
 public class ApproximatingTypeEnvironmentTest extends TestCase {
 
-	TypeEnvironmentFactory teFactory = new TypeEnvironmentFactory();
-	TypeEnvironment unboundContext = teFactory.getEnvironment( BigBlob.class );
-	TypeEnvironment approximatingUnboundContext = teFactory.toApproximatingEnvironment( unboundContext );
+	TypeEnvironment unboundContext = TypeEnvironmentFactory.getEnvironment( BigBlob.class );
+	TypeEnvironment approximatingUnboundContext = TypeEnvironmentFactory.toApproximatingEnvironment( unboundContext );
 
-	TypeEnvironment boundContext = teFactory.getEnvironment( SonOfBlob.class );
-	TypeEnvironment approximatingBoundContext = teFactory.toApproximatingEnvironment( boundContext );
+	TypeEnvironment boundContext = TypeEnvironmentFactory.getEnvironment( SonOfBlob.class );
+	TypeEnvironment approximatingBoundContext = TypeEnvironmentFactory.toApproximatingEnvironment( boundContext );
 
 	public void testDoesNothingOnClasses() throws SecurityException {
 		assertEquals( String[].class, approximatingUnboundContext.bind( String[].class ) );
