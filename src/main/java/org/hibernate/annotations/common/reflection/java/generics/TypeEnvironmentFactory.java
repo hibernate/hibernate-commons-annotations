@@ -18,35 +18,39 @@ import java.lang.reflect.TypeVariable;
  * @author Davide Marchignoli
  * @author Paolo Perrotta
  */
-public class TypeEnvironmentFactory {
+public final class TypeEnvironmentFactory {
+
+	private TypeEnvironmentFactory() {
+		//no need to construct
+	}
 
 	/**
 	 * @return Returns a type environment suitable for resolving types occurring
 	 *         in subclasses of the context class.
 	 */
-	public TypeEnvironment getEnvironment(Class context) {
+	public static TypeEnvironment getEnvironment(Class context) {
 		if ( context == null ) {
         	return IdentityTypeEnvironment.INSTANCE;
         }
         return createEnvironment( context );
 	}
 
-	public TypeEnvironment getEnvironment(Type context) {
+	public static TypeEnvironment getEnvironment(Type context) {
 		if ( context == null ) {
         	return IdentityTypeEnvironment.INSTANCE;
         }
         return createEnvironment( context );
 	}
 
-	public TypeEnvironment getEnvironment(Type t, TypeEnvironment context) {
-		return CompoundTypeEnvironment.create( getEnvironment(t), context );
+	public static TypeEnvironment getEnvironment(Type t, TypeEnvironment context) {
+		return CompoundTypeEnvironment.create( getEnvironment( t ), context );
 	}
 
-	public TypeEnvironment toApproximatingEnvironment(TypeEnvironment context) {
+	public static TypeEnvironment toApproximatingEnvironment(TypeEnvironment context) {
 		return CompoundTypeEnvironment.create( new ApproximatingTypeEnvironment(), context );
 	}
 
-	private TypeEnvironment createEnvironment(Type context) {
+	private static TypeEnvironment createEnvironment(Type context) {
 		return new TypeSwitch<TypeEnvironment>() {
 			@Override
 			public TypeEnvironment caseClass(Class classType) {
@@ -68,13 +72,12 @@ public class TypeEnvironmentFactory {
 		}.doSwitch( context );
 	}
 
-	private TypeEnvironment createSuperTypeEnvironment(Class clazz) {
+	private static TypeEnvironment createSuperTypeEnvironment(Class clazz) {
 		Class superclass = clazz.getSuperclass();
 		if ( superclass == null ) {
 			return IdentityTypeEnvironment.INSTANCE;
 		}
 
-		Type[] formalArgs = superclass.getTypeParameters();
 		Type genericSuperclass = clazz.getGenericSuperclass();
 
 		if ( genericSuperclass instanceof Class ) {
@@ -82,6 +85,7 @@ public class TypeEnvironmentFactory {
 		}
 
 		if ( genericSuperclass instanceof ParameterizedType ) {
+			Type[] formalArgs = superclass.getTypeParameters();
 			Type[] actualArgs = ( (ParameterizedType) genericSuperclass ).getActualTypeArguments();
 			return new SimpleTypeEnvironment( formalArgs, actualArgs );
 		}
@@ -89,7 +93,7 @@ public class TypeEnvironmentFactory {
 		throw new AssertionError( "Should be unreachable" );
 	}
 
-	private TypeEnvironment createEnvironment(ParameterizedType t) {
+	private static TypeEnvironment createEnvironment(ParameterizedType t) {
 		Type[] tactuals = t.getActualTypeArguments();
 		Type rawType = t.getRawType();
 		if ( rawType instanceof Class ) {
@@ -98,4 +102,5 @@ public class TypeEnvironmentFactory {
 		}
 		return IdentityTypeEnvironment.INSTANCE;
 	}
+
 }

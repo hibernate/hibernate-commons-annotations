@@ -102,8 +102,6 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 
 	private final Map<MemberKey, JavaXMethod> xMethods = new HashMap<MemberKey, JavaXMethod>();
 
-	private final TypeEnvironmentFactory typeEnvs = new TypeEnvironmentFactory();
-
 	public XClass toXClass(Class clazz) {
 		return toXClass( clazz, IdentityTypeEnvironment.INSTANCE );
 	}
@@ -155,7 +153,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 			@Override
 			public XClass caseParameterizedType(ParameterizedType parameterizedType) {
 				return toXClass( parameterizedType.getRawType(),
-						typeEnvs.getEnvironment( parameterizedType, context )
+					TypeEnvironmentFactory.getEnvironment( parameterizedType, context )
 				);
 			}
 		}.doSwitch( context.bind( t ) );
@@ -205,12 +203,12 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		return new TypeSwitch<TypeEnvironment>() {
 			@Override
 			public TypeEnvironment caseClass(Class classType) {
-				return typeEnvs.getEnvironment( classType );
+				return TypeEnvironmentFactory.getEnvironment( classType );
 			}
 
 			@Override
 			public TypeEnvironment caseParameterizedType(ParameterizedType parameterizedType) {
-				return typeEnvs.getEnvironment( parameterizedType );
+				return TypeEnvironmentFactory.getEnvironment( parameterizedType );
 			}
 
 			@Override
@@ -242,7 +240,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 	}
 
 	public TypeEnvironment toApproximatingEnvironment(TypeEnvironment context) {
-		return typeEnvs.toApproximatingEnvironment( context );
+		return TypeEnvironmentFactory.toApproximatingEnvironment( context );
 	}
 
     public AnnotationReader buildAnnotationReader(AnnotatedElement annotatedElement) {
