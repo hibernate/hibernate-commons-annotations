@@ -25,4 +25,10 @@ public final class JavaMetadataProvider implements MetadataProvider {
 	public AnnotationReader getAnnotationReader(AnnotatedElement annotatedElement) {
 		return new JavaAnnotationReader(annotatedElement);
 	}
+
+	@Override
+	public void reset() {
+		//no-op
+	}
+
 }
