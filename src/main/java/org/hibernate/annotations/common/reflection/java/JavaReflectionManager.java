@@ -13,6 +13,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.hibernate.annotations.common.reflection.AnnotationReader;
 import org.hibernate.annotations.common.reflection.ClassLoaderDelegate;
@@ -43,8 +44,13 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  * @author Sanne Grinovero
  */
 public class JavaReflectionManager implements ReflectionManager, MetadataProviderInjector {
+
+	private static final boolean METADATA_CACHE_DIAGNOSTICS = Boolean.getBoolean( "org.hibernate.annotations.common.METADATA_CACHE_DIAGNOSTICS" );
+
 	private MetadataProvider metadataProvider;
 	private ClassLoaderDelegate classLoaderDelegate = StandardClassLoaderDelegateImpl.INSTANCE;
+
+	private final AtomicBoolean empty = new AtomicBoolean(true);
 
 	static {
 		LoggerFactory.make( Version.class.getName() ).version( Version.getVersionString() );
@@ -140,6 +146,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 				JavaXClass result = xClasses.get( key );
 				if ( result == null ) {
 					result = new JavaXClass( classType, context, JavaReflectionManager.this );
+					used();
 					xClasses.put( key, result );
 				}
 				return result;
@@ -164,6 +171,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		JavaXPackage xPackage = packagesToXPackages.get( pkg );
 		if ( xPackage == null ) {
 			xPackage = new JavaXPackage( pkg, this );
+			used();
 			packagesToXPackages.put( pkg, xPackage );
 		}
 		return xPackage;
@@ -175,6 +183,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
         JavaXProperty xProperty = xProperties.get( key );
 		if ( xProperty == null ) {
 			xProperty = JavaXProperty.create( member, context, this );
+			used();
 			xProperties.put( key, xProperty );
 		}
 		return xProperty;
@@ -186,6 +195,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
         JavaXMethod xMethod = xMethods.get( key );
 		if ( xMethod == null ) {
 			xMethod = JavaXMethod.create( member, context, this );
+			used();
 			xMethods.put( key, xMethod );
 		}
 		return xMethod;
@@ -245,11 +255,24 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 
 	@Override
 	public void reset() {
-		this.xClasses.clear();
-		this.packagesToXPackages.clear();
-		this.xProperties.clear();
-		this.xMethods.clear();
+		boolean wasEmpty = empty.getAndSet( true );
+		if ( !wasEmpty ) {
+			this.xClasses.clear();
+			this.packagesToXPackages.clear();
+			this.xProperties.clear();
+			this.xMethods.clear();
+			if ( METADATA_CACHE_DIAGNOSTICS ) {
+				new RuntimeException( "Diagnostics message : Caches now empty" ).printStackTrace();
+			}
+		}
 		this.metadataProvider.reset();
+	}
+
+	private void used() {
+		boolean wasEmpty = empty.getAndSet( false );
+		if ( wasEmpty && METADATA_CACHE_DIAGNOSTICS ) {
+			new RuntimeException( "Diagnostics message : Caches now being used" ).printStackTrace();
+		}
 	}
 
 }
