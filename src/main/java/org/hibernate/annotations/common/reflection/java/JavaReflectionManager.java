@@ -222,7 +222,9 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 				new RuntimeException( "Diagnostics message : Caches now empty" ).printStackTrace();
 			}
 		}
-		this.metadataProvider.reset();
+		if ( metadataProvider != null ) {
+			this.metadataProvider.reset();
+		}
 	}
 
 	private void used() {
