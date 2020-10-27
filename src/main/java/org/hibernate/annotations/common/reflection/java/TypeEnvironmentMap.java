@@ -25,7 +25,7 @@ final class TypeEnvironmentMap<K,V> {
 
 	//First level is optimised for fast access; it's expected to be small so a low load factor
 	//should be fine in terms of memory costs.
-	private final HashMap<TypeEnvironment, ContextScope> rootMap = new HashMap<>( 8, 0.5f );
+	private HashMap<TypeEnvironment, ContextScope> rootMap;
 	private final XTypeConstruction<K,V> constructionMethod;
 
 	TypeEnvironmentMap(final XTypeConstruction<K, V> constructionMethod) {
@@ -33,13 +33,26 @@ final class TypeEnvironmentMap<K,V> {
 		this.constructionMethod = constructionMethod;
 	}
 
+	private <K, V> HashMap<TypeEnvironment, ContextScope> getOrInitRootMap() {
+		if ( this.rootMap == null ) {
+			this.rootMap = new HashMap<>( 8, 0.5f );
+		}
+		return this.rootMap;
+	}
+
 	V getOrCompute(final TypeEnvironment context, final K subKey) {
-		final ContextScope contextualMap = rootMap.computeIfAbsent( context, ContextScope::new );
+		final ContextScope contextualMap = getOrInitRootMap().computeIfAbsent( context, ContextScope::new );
 		return contextualMap.getOrCompute( subKey );
 	}
 
 	void clear() {
-		rootMap.clear();
+		final HashMap<TypeEnvironment, ContextScope> m = this.rootMap;
+		if ( m != null ) {
+			// Remove the reference to the rootMap, as very large arrays within HashMap
+			// are not resized when clearing.
+			this.rootMap = null;
+			m.clear();
+		}
 	}
 
 	private final class ContextScope extends HashMap<K,V> {
