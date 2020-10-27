@@ -71,7 +71,7 @@ public final class JavaReflectionManager implements ReflectionManager, MetadataP
 		return new JavaXClass( classType, typeEnvironment, this );
 	}
 
-	private final Map<Package, JavaXPackage> packagesToXPackages = new HashMap<>();
+	private Map<Package, JavaXPackage> packagesToXPackages;
 
 	private final TypeEnvironmentMap<Member, JavaXProperty> xProperties = new TypeEnvironmentMap<>( this::javaXPropertyConstruction );
 
@@ -123,13 +123,21 @@ public final class JavaReflectionManager implements ReflectionManager, MetadataP
 
 	@Override
 	public XPackage toXPackage(Package pkg) {
-		JavaXPackage xPackage = packagesToXPackages.get( pkg );
+		final Map<Package, JavaXPackage> packagesToXPackagesMap = getPackagesToXPackagesMap();
+		JavaXPackage xPackage = packagesToXPackagesMap.get( pkg );
 		if ( xPackage == null ) {
 			xPackage = new JavaXPackage( pkg, this );
 			used();
-			packagesToXPackages.put( pkg, xPackage );
+			packagesToXPackagesMap.put( pkg, xPackage );
 		}
 		return xPackage;
+	}
+
+	private Map<Package, JavaXPackage> getPackagesToXPackagesMap() {
+		if ( this.packagesToXPackages == null ) {
+			this.packagesToXPackages = new HashMap<>( 8, 0.5f );
+		}
+		return this.packagesToXPackages;
 	}
 
 	XProperty getXProperty(Member member, TypeEnvironment context) {
@@ -197,7 +205,7 @@ public final class JavaReflectionManager implements ReflectionManager, MetadataP
 		boolean wasEmpty = empty.getAndSet( true );
 		if ( !wasEmpty ) {
 			this.xClasses.clear();
-			this.packagesToXPackages.clear();
+			this.packagesToXPackages = null;
 			this.xProperties.clear();
 			this.xMethods.clear();
 			if ( METADATA_CACHE_DIAGNOSTICS ) {
