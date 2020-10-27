@@ -43,7 +43,7 @@ import org.hibernate.annotations.common.util.impl.LoggerFactory;
  * @author Emmanuel Bernard
  * @author Sanne Grinovero
  */
-public class JavaReflectionManager implements ReflectionManager, MetadataProviderInjector {
+public final class JavaReflectionManager implements ReflectionManager, MetadataProviderInjector {
 
 	private static final boolean METADATA_CACHE_DIAGNOSTICS = Boolean.getBoolean( "org.hibernate.annotations.common.METADATA_CACHE_DIAGNOSTICS" );
 
@@ -82,25 +82,30 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		return classLoaderDelegate;
 	}
 
-	private static class TypeKey extends Pair<Type, TypeEnvironment> {
-		TypeKey(Type t, TypeEnvironment context) {
-			super( t, context );
-		}
+	private final TypeEnvironmentMap<Class,JavaXClass> xClasses = new TypeEnvironmentMap<>( this::javaXClassConstruction );
+
+	private JavaXClass javaXClassConstruction(
+			Class classType,
+			TypeEnvironment typeEnvironment) {
+		used();
+		return new JavaXClass( classType, typeEnvironment, this );
 	}
 
-	private static class MemberKey extends Pair<Member, TypeEnvironment> {
-		MemberKey(Member member, TypeEnvironment context) {
-			super( member, context );
-		}
+	private final Map<Package, JavaXPackage> packagesToXPackages = new HashMap<>();
+
+	private final TypeEnvironmentMap<Member, JavaXProperty> xProperties = new TypeEnvironmentMap<>( this::javaXPropertyConstruction );
+
+	private JavaXProperty javaXPropertyConstruction(Member member, TypeEnvironment typeEnvironment) {
+		used();
+		return JavaXProperty.create( member, typeEnvironment, this );
 	}
 
-	private final Map<TypeKey, JavaXClass> xClasses = new HashMap<TypeKey, JavaXClass>();
+	private final TypeEnvironmentMap<Member, JavaXMethod> xMethods = new TypeEnvironmentMap<>( this::javaJavaXMethodConstruction );
 
-	private final Map<Package, JavaXPackage> packagesToXPackages = new HashMap<Package, JavaXPackage>();
-
-	private final Map<MemberKey, JavaXProperty> xProperties = new HashMap<MemberKey, JavaXProperty>();
-
-	private final Map<MemberKey, JavaXMethod> xMethods = new HashMap<MemberKey, JavaXMethod>();
+	private JavaXMethod javaJavaXMethodConstruction(Member member, TypeEnvironment typeEnvironment) {
+		used();
+		return JavaXMethod.create( member, typeEnvironment, this );
+	}
 
 	public XClass toXClass(Class clazz) {
 		return toXClass( clazz, IdentityTypeEnvironment.INSTANCE );
@@ -132,7 +137,8 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		return toXClass( getClassLoaderDelegate().classForName( name ) );
 	}
 
-	public XPackage packageForName(String packageName) throws ClassNotFoundException {
+	@Override
+	public XPackage packageForName(String packageName) {
 		return getXAnnotatedElement( getClassLoaderDelegate().classForName( packageName + ".package-info" ).getPackage() );
 	}
 
@@ -140,14 +146,7 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 		return new TypeSwitch<XClass>() {
 			@Override
 			public XClass caseClass(Class classType) {
-				TypeKey key = new TypeKey( classType, context );
-				JavaXClass result = xClasses.get( key );
-				if ( result == null ) {
-					result = new JavaXClass( classType, context, JavaReflectionManager.this );
-					used();
-					xClasses.put( key, result );
-				}
-				return result;
+				return xClasses.getOrCompute( context, classType );
 			}
 
 			@Override
@@ -176,27 +175,11 @@ public class JavaReflectionManager implements ReflectionManager, MetadataProvide
 	}
 
 	XProperty getXProperty(Member member, TypeEnvironment context) {
-		MemberKey key = new MemberKey( member, context );
-        //FIXME get is as expensive as create most time spent in hashCode and equals
-        JavaXProperty xProperty = xProperties.get( key );
-		if ( xProperty == null ) {
-			xProperty = JavaXProperty.create( member, context, this );
-			used();
-			xProperties.put( key, xProperty );
-		}
-		return xProperty;
+		return xProperties.getOrCompute( context, member );
 	}
 
 	XMethod getXMethod(Member member, TypeEnvironment context) {
-		MemberKey key = new MemberKey( member, context );
-        //FIXME get is as expensive as create most time spent in hashCode and equals
-        JavaXMethod xMethod = xMethods.get( key );
-		if ( xMethod == null ) {
-			xMethod = JavaXMethod.create( member, context, this );
-			used();
-			xMethods.put( key, xMethod );
-		}
-		return xMethod;
+		return xMethods.getOrCompute( context, member );
 	}
 
 	TypeEnvironment getTypeEnvironment(final Type t) {
