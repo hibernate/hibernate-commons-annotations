@@ -24,26 +24,29 @@ import java.util.Map;
 public final class AnnotationDescriptor {
 
 	private final Class<? extends Annotation> type;
-	private final Map<String, Object> elements = new HashMap<String, Object>();
+	private Map<String, Object> elements;
 
 	public AnnotationDescriptor(Class<? extends Annotation> annotationType) {
 		type = annotationType;
 	}
 
 	public void setValue(String elementName, Object value) {
+		if ( elements == null ) {
+			elements = new HashMap<>( 4 ); //likely to be small
+		}
 		elements.put( elementName, value );
 	}
 
 	public Object valueOf(String elementName) {
-		return elements.get( elementName );
+		return elements == null ? null : elements.get( elementName );
 	}
 
 	public boolean containsElement(String elementName) {
-		return elements.containsKey( elementName );
+		return elements == null ? false : elements.containsKey( elementName );
 	}
 
 	public int numberOfElements() {
-		return elements.size();
+		return elements == null ? 0 : elements.size();
 	}
 
 	public Class<? extends Annotation> type() {
