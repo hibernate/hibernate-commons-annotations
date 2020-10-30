@@ -9,6 +9,7 @@ package org.hibernate.annotations.common.annotationfactory;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +73,19 @@ public final class AnnotationProxy implements Annotation, InvocationHandler {
 		if ( processedValuesFromDescriptor != descriptor.numberOfElements() ) {
 			throw new RuntimeException( "Trying to instanciate " + annotationType + " with unknown elements" );
 		}
-		return result;
+		return toSmallMap( result );
+	}
+
+	static <K, V> Map<K, V> toSmallMap(Map<K, V> map) {
+		switch ( map.size() ) {
+			case 0:
+				return Collections.emptyMap();
+			case 1:
+				Map.Entry<K, V> entry = map.entrySet().iterator().next();
+				return Collections.singletonMap( entry.getKey(), entry.getValue() );
+			default:
+				return map;
+		}
 	}
 
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
