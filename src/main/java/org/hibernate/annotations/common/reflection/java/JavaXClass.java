@@ -82,23 +82,25 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 
 	private List<XProperty> getDeclaredFieldProperties(Filter filter) {
 		Field[] declaredFields = toClass().getDeclaredFields();
-		List<XProperty> result = new ArrayList<>();
+		ArrayList<XProperty> result = new ArrayList<>();
 		for ( Field f : declaredFields ) {
 			if ( ReflectionUtil.isProperty( f, getTypeEnvironment().bind( f.getGenericType() ), filter ) ) {
 				result.add( getFactory().getXProperty( f, getTypeEnvironment() ) );
 			}
 		}
+		result.trimToSize();
 		return result;
 	}
 
 	private List<XProperty> getDeclaredMethodProperties(Filter filter) {
-		List<XProperty> result = new ArrayList<XProperty>();
+		ArrayList<XProperty> result = new ArrayList<XProperty>();
 		Method[] declaredMethods = toClass().getDeclaredMethods();
 		for ( Method m : declaredMethods ) {
 			if ( ReflectionUtil.isProperty( m, getTypeEnvironment().bind( m.getGenericReturnType() ), filter ) ) {
 				result.add( getFactory().getXProperty( m, getTypeEnvironment() ) );
 			}
 		}
+		result.trimToSize();
 		return result;
 	}
 
