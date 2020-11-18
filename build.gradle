@@ -1,11 +1,15 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
         classpath 'org.hibernate.build.gradle:version-injection-plugin:1.0.0'
         classpath 'org.hibernate.build.gradle:gradle-animalSniffer-plugin:1.0.1.Final'
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:4.5.1"
     }
 }
 
@@ -16,6 +20,7 @@ repositories {
 apply plugin: 'java'
 apply plugin: 'osgi'
 
+apply plugin: 'com.diffplug.gradle.spotless'
 apply plugin: 'version-injection'
 
 apply plugin: 'maven-publish'
@@ -175,6 +180,21 @@ publishing {
 wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
+
+spotless {
+    //Only apply on files added, compared to this git source:
+    ratchetFrom 'origin/master'
+    //Don't fail during the check: rather than enforcing guidelines, we use this plugin to fix mistakes automatically.
+    enforceCheck false
+    java {
+        licenseHeaderFile 'spotless.license.java'
+        removeUnusedImports()
+        importOrder()
+        trimTrailingWhitespace()
+        endWithNewline()
+    }
+}
+tasks.compileJava.dependsOn(spotlessApply)
 
 
 // OSGi manifest helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
