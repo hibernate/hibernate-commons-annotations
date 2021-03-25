@@ -23,7 +23,7 @@ public class ReflectionUtil {
     			&& !m.isSynthetic()
     			&& !m.isBridge()
     			&& ( filter.returnStatic() || !Modifier.isStatic( m.getModifiers() ) )
-    			&& m.getParameterTypes().length == 0
+    			&& m.getParameterCount() == 0
     			&& ( m.getName().startsWith( "get" ) || m.getName().startsWith( "is" ) );
     	// TODO should we use stronger checking on the naming of getters/setters, or just leave this to the validator?
     }
