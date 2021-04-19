@@ -1,0 +1,246 @@
+
+apply plugin: 'maven-publish'
+apply plugin: 'signing'
+apply plugin: 'nu.studer.credentials'
+
+ext {
+    if ( project.hasProperty( 'hibernatePublishUsername' ) ) {
+        credentials.hibernatePublishUsername = project.property( 'hibernatePublishUsername' )
+    }
+    if ( project.hasProperty( 'hibernatePublishPassword' ) ) {
+        credentials.hibernatePublishPassword = project.property( 'hibernatePublishPassword' )
+    }
+
+    if ( project.hasProperty( 'hibernateSnapshotsUsername' ) ) {
+        credentials.hibernateSnapshotsUsername = project.property( 'hibernateSnapshotsUsername' )
+    }
+    if ( project.hasProperty( 'hibernateSnapshotsPassword' ) ) {
+        credentials.hibernateSnapshotsPassword = project.property( 'hibernateSnapshotsPassword' )
+    }
+
+    gradle.taskGraph.addTaskExecutionGraphListener(
+            new TaskExecutionGraphListener() {
+                @Override
+                void graphPopulated(TaskExecutionGraph graph) {
+                    if ( graph.hasTask( 'publishMavenJavaPublicationToSnapshotRepository' ) ) {
+                        if ( ! project.hcannVersion.isSnapshot ) {
+                            throw new GradleException("Cannot publish non-snapshot version to snapshot repository");
+                        }
+                        if ( project.credentials.hibernateSnapshotsUsername == null ) {
+                            throw new GradleException("Snapshot publishing credentials not specified");
+                        }
+                    }
+
+                    if (graph.hasTask('publishMavenJavaPublicationToOssrhRepository')) {
+                        if ( project.hcannVersion.isSnapshot ) {
+                            throw new GradleException("Cannot publish snapshot version to non-snapshot repository");
+                        }
+                        if (project.credentials.hibernatePublishUsername == null) {
+                            throw new GradleException("Publishing credentials not specified");
+                        }
+                    }
+                }
+            }
+    )
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.hibernate.Version',
+
+                'Implementation-Url': 'http://hibernate.org',
+                'Implementation-Version': version,
+                'Implementation-Vendor': 'Hibernate.org',
+                'Implementation-Vendor-Id': 'org.hibernate',
+
+                'Bundle-Vendor': 'Hibernate.org',
+
+                // Java 9 module name
+                'Automatic-Module-Name': 'org.hibernate.commons.annotations'
+        )
+//
+//        // See https://discuss.gradle.org/t/balancing-deprecation-of-sourcesetoutput-classesdir-and-other-parts-of-gradle-that-only-accept-a-dir-file/25283
+//        classesDir = sourceSets.main.java.outputDir
+//        classpath = configurations.runtime
+    }
+}
+
+OsgiManifestPackagingInfo.buildInfo( project ).applyTo( jar.manifest )
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+javadoc {
+    configure( options ) {
+        windowTitle = "$project.name JavaDocs"
+        docTitle = "$project.name JavaDocs ($project.version)"
+        use = true
+        encoding = 'UTF-8'
+        links += ['https://docs.oracle.com/javase/8/docs/api/']
+        tags = ["apiNote", 'implSpec', 'implNote', 'todo']
+
+        addStringOption('Xdoclint:none', '-quiet')
+
+        if (JavaVersion.current().isJava11Compatible()) {
+            System.out.println("Forcing Javadoc in Java 8 compatible mode");
+            options.source = JavaLanguageVersion.of(8)
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'Hibernate Commons Annotations'
+                description = 'Common reflection code used in support of annotation processing'
+                url = 'http://hibernate.org'
+
+                organization {
+                    name = 'Hibernate.org'
+                    url = 'http://hibernate.org'
+                }
+
+                licenses {
+                    license {
+                        name = 'GNU Library General Public License v2.1 or later'
+                        url = 'http://www.opensource.org/licenses/LGPL-2.1'
+                        comments = 'See discussion at http://hibernate.org/community/license/ for more details.'
+                        distribution = 'repo'
+                    }
+                }
+
+                scm {
+                    url = 'http://github.com/hibernate/hibernate-commons-annotations'
+                    connection = 'scm:git:http://github.com/hibernate/hibernate-commons-annotations.git'
+                    developerConnection = 'scm:git:git@github.com:hibernate/hibernate-commons-annotations.git'
+                }
+
+                issueManagement {
+                    system = 'jira'
+                    url = 'https://hibernate.atlassian.net/browse/HCANN'
+                }
+
+                developers {
+                    developer {
+                        id = 'hibernate-team'
+                        name = 'The Hibernate Development Team'
+                        organization = 'Hibernate.org'
+                        organizationUrl = 'http://hibernate.org'
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            if ( project.hcannVersion.isSnapshot ) {
+                name 'snapshots'
+                url 'https://oss.sonatype.org/content/repositories/snapshots/'
+
+                credentials {
+                    username project.credentials.hibernateSnapshotsUsername
+                    password project.credentials.hibernateSnapshotsPassword
+                }
+            }
+            else {
+                name 'ossrh'
+                url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+
+                credentials {
+                    username project.credentials.hibernatePublishUsername
+                    password project.credentials.hibernatePublishPassword
+                }
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+tasks.withType(Sign) {
+    onlyIf { ! project.hcannVersion.isSnapshot }
+}
+
+
+// OSGi manifest helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class OsgiManifestPackagingInfo {
+    private String[] exportPackageInstructions;
+    private String[] privatePackageInstructions;
+
+    String[] getExportPackageInstructions() {
+        return exportPackageInstructions
+    }
+
+    String[] getPrivatePackageInstructions() {
+        return privatePackageInstructions
+    }
+
+    public static OsgiManifestPackagingInfo buildInfo(Project project) {
+        final String exportPackageVersion = project.version.replaceAll( "-SNAPSHOT", "" )
+                .replaceAll( ".Final-redhat-", "DO_NOT_REPLACE" )
+                .replaceAll( ".Final", "" )
+                .replaceAll( "DO_NOT_REPLACE", ".Final-redhat-" );
+
+        final Set<String> exportPackageInstructionSet = new HashSet<String>()
+        final Set<String> privatePackageInstructionSet = new HashSet<String>()
+
+        final SourceDirectorySet sourceDirectorySet = project.sourceSets.main.java;
+        sourceDirectorySet.each { javaSrcFile ->
+            final String packageName = determinePackageName( sourceDirectorySet, javaSrcFile );
+            if ( packageName.endsWith( ".internal" )
+                    || packageName.contains( ".internal." ) ) {
+                privatePackageInstructionSet.add( packageName );
+            }
+            else {
+                exportPackageInstructionSet.add( packageName + ";version=\"" + exportPackageVersion + "\"" );
+            }
+        }
+
+        return new OsgiManifestPackagingInfo(
+                exportPackageInstructionSet.toArray( new String[ exportPackageInstructionSet.size() ] ),
+                privatePackageInstructionSet.toArray( new String[ privatePackageInstructionSet.size() ] )
+        );
+    }
+
+    private static String determinePackageName(SourceDirectorySet sourceDirectorySet, File javaFile) {
+        final javaFileAbsolutePath = javaFile.absolutePath;
+        for ( File sourceDirectory : sourceDirectorySet.srcDirs ) {
+            final String sourceDirectoryAbsolutePath = sourceDirectory.absolutePath;
+            if ( javaFileAbsolutePath.startsWith( sourceDirectoryAbsolutePath ) ) {
+                final String javaFileRelativePath = javaFileAbsolutePath.substring(
+                        sourceDirectoryAbsolutePath.length() + 1,
+                        javaFileAbsolutePath.lastIndexOf( File.separator )
+                );
+                return javaFileRelativePath.replace( File.separator, "." );
+            }
+        }
+        throw new RuntimeException( "ugh" );
+    }
+
+    private OsgiManifestPackagingInfo(String[] exportPackageInstructions, String[] privatePackageInstructions) {
+        this.exportPackageInstructions = exportPackageInstructions
+        this.privatePackageInstructions = privatePackageInstructions
+    }
+
+    def applyTo(def manifest) {
+        if ( exportPackageInstructions.length > 0 ) {
+            manifest.attributes( 'Export-Package': exportPackageInstructions )
+        }
+        if ( privatePackageInstructions.length > 0 ) {
+            manifest.attribute( 'Private-Package', privatePackageInstructions )
+        }
+    }
+}
