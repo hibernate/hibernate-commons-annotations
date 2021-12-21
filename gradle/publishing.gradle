@@ -55,7 +55,7 @@ jar {
                 'Main-Class': 'org.hibernate.Version',
 
                 'Implementation-Url': 'http://hibernate.org',
-                'Implementation-Version': version,
+                'Implementation-Version': archiveVersion,
                 'Implementation-Vendor': 'Hibernate.org',
                 'Implementation-Vendor-Id': 'org.hibernate',
 
