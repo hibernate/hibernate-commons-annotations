@@ -7,7 +7,7 @@ buildscript {
         classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
         classpath 'org.hibernate.build.gradle:version-injection-plugin:1.0.0'
         classpath 'org.hibernate.build.gradle:gradle-animalSniffer-plugin:1.0.1.Final'
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:4.5.1"
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:6.0.5"
         classpath 'nu.studer:gradle-credentials-plugin:2.1'
     }
 }
@@ -30,7 +30,7 @@ repositories {
 apply from: rootProject.file( 'gradle/base-information.gradle' )
 apply from: rootProject.file( 'gradle/publishing.gradle' )
 
-apply plugin: 'com.diffplug.gradle.spotless'
+apply plugin: 'com.diffplug.spotless'
 apply plugin: 'version-injection'
 
 
