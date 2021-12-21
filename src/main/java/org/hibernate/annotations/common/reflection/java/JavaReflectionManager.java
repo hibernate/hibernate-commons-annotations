@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.hibernate.annotations.common.Version;
 import org.hibernate.annotations.common.reflection.AnnotationReader;
 import org.hibernate.annotations.common.reflection.MetadataProvider;
 import org.hibernate.annotations.common.reflection.MetadataProviderInjector;
@@ -29,7 +28,6 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironmentFactory;
 import org.hibernate.annotations.common.reflection.java.generics.TypeSwitch;
 import org.hibernate.annotations.common.reflection.java.generics.TypeUtils;
-import org.hibernate.annotations.common.util.impl.LoggerFactory;
 
 /**
  * The factory for all the objects in this package.
@@ -46,10 +44,6 @@ public final class JavaReflectionManager implements ReflectionManager, MetadataP
 	private MetadataProvider metadataProvider;
 
 	private final AtomicBoolean empty = new AtomicBoolean(true);
-
-	static {
-		LoggerFactory.make( Version.class.getName() ).version( Version.getVersionString() );
-	}
 
 	public MetadataProvider getMetadataProvider() {
 		if (metadataProvider == null) {

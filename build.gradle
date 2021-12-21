@@ -5,7 +5,6 @@ buildscript {
     }
     dependencies {
         classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
-        classpath 'org.hibernate.build.gradle:version-injection-plugin:1.0.0'
         classpath 'org.hibernate.build.gradle:gradle-animalSniffer-plugin:1.0.1.Final'
         classpath "com.diffplug.spotless:spotless-plugin-gradle:6.0.5"
         classpath 'nu.studer:gradle-credentials-plugin:2.1'
@@ -31,43 +30,10 @@ apply from: rootProject.file( 'gradle/base-information.gradle' )
 apply from: rootProject.file( 'gradle/publishing.gradle' )
 
 apply plugin: 'com.diffplug.spotless'
-apply plugin: 'version-injection'
-
-
-configurations {
-    jbossLoggingTool {
-        description = 'Configuration for defining dependencies needed to run the JBoss Logging AnnotationProcessor tool'
-    }
-}
 
 dependencies {
-    ext {
-        jbossLoggingVersion = '3.3.2.Final'
-        jbossLoggingToolVersion = '2.1.0.Final'
-
-        libraries = [
-                jbossLogging: "org.jboss.logging:jboss-logging:${jbossLoggingVersion}",
-                jbossLoggingAnnotations: "org.jboss.logging:jboss-logging-annotations:${jbossLoggingToolVersion}",
-                jbossLoggingProcesssor: "org.jboss.logging:jboss-logging-processor:${jbossLoggingToolVersion}"
-        ]
-    }
-
-    implementation libraries.jbossLogging
-
-    compileOnly libraries.jbossLoggingAnnotations
-
-    annotationProcessor libraries.jbossLoggingProcesssor
-    annotationProcessor libraries.jbossLoggingAnnotations
-    annotationProcessor libraries.jbossLogging
-
     testImplementation 'junit:junit:3.8.1'
 }
-
-// Project version injection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-versionInjection {
-    into( 'org.hibernate.annotations.common.Version', 'getVersionString' )
-}
-
 
 wrapper {
     distributionType = Wrapper.DistributionType.ALL

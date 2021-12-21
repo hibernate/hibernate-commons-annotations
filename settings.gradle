@@ -4,8 +4,8 @@
  * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
  * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
  */
-if ( !JavaVersion.current().java8Compatible ) {
-    throw new GradleException( "Gradle must be run with Java 8" )
+if ( !JavaVersion.current().isJava11Compatible() ) {
+    throw new GradleException( "Gradle must be run with Java 11" )
 }
 
 rootProject.name = 'hibernate-commons-annotations'
