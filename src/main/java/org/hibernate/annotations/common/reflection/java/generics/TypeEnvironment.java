@@ -13,24 +13,24 @@ import java.lang.reflect.Type;
  * <code>Type</code>.
  * <p/>
  * For example:
- * <p/>
- * <p/>
- * <blockquote>
- * <p/>
  * <pre>
- *  class Shop&ltT&gt{
+ * {@code
+ *  class Shop&ltT&gt {
  *    List&ltT&gt getCatalog() { ... }
  *  }
- * <p/>
- *  class Bakery extends Shop&ltBread&gt{}
+ * }
  * </pre>
  * <p/>
- * </blockquote>
+ * <pre>
+ * {@code
+ * class Bakery extends Shop<Bread> { ... }
+ * }
+ * </pre>
  * <p/>
  * Consider the type returned by method <code>getCatalog()</code>. There are
  * two possible contexts here. In the context of <code>Shop</code>, the type
- * is <code>List&ltT&gt</code>. In the context of <code>Bakery</code>, the
- * type is <code>List&ltBread&gt</code>. Each of these contexts can be
+ * is <code>List<T></code>. In the context of <code>Bakery</code>, the
+ * type is <code>List<Bread></code>. Each of these contexts can be
  * represented by a <code>TypeEnvironment</code>.
  *
  * @author Davide Marchignoli
@@ -56,4 +56,5 @@ public interface TypeEnvironment {
 	 *         classes whenever this is possible.
 	 */
 	public Type bind(Type type);
+
 }
