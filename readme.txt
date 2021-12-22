@@ -7,13 +7,13 @@ Description
 Hibernate Commons Annotations is a utility project used by several Hibernate projects;
 as a user of Hibernate libraries you probably are not going to use this directly.
 
-It's first scope is to support Java Generics type discovery.
-It's second scope is to support Java Annotations overriding through XML files
+Its first scope is to support Java Generics type discovery.
+Its second scope is to support Java Annotations overriding through XML files
 (mainly but not conceptually limited to).
 
 Requirements
 ------------
-Since version 5.1 this project requires Java 8.
+Since version 6.0 this project requires Java 11.
 
 Instructions
 ------------

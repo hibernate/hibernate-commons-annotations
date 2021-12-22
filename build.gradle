@@ -13,7 +13,7 @@ buildscript {
 }
 
 plugins {
-    id 'java'
+    id 'java-library'
 
     id 'maven-publish'
     id 'signing'
@@ -63,31 +63,6 @@ dependencies {
     testImplementation 'junit:junit:3.8.1'
 }
 
-// create a special 'compile' task that performs all the tasks normally associated with compiling a project
-// via task dependencies
-tasks.create( 'compile' ) {
-    dependsOn( tasks.compileJava, tasks.processResources, tasks.compileTestJava, tasks.processTestResources )
-}
-
-project.getConvention().findPlugin( JavaPluginConvention.class ).sourceSets.each { sourceSet ->
-    JavaCompile javaCompileTask = project.tasks.findByName( sourceSet.compileJavaTaskName ) as JavaCompile
-
-    File aptDir = project.file( "${project.buildDir}/generated-src/apt/${sourceSet.name}" )
-    sourceSet.allJava.srcDir( aptDir )
-    sourceSet.compileClasspath += configurations.jbossLoggingTool
-
-    javaCompileTask.options.compilerArgs += [
-            "-nowarn",
-            "-encoding", "UTF-8",
-            "-s", "${aptDir.absolutePath}"
-    ]
-
-    javaCompileTask.doFirst {
-        aptDir.mkdirs()
-    }
-}
-
-
 // Project version injection ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 versionInjection {
     into( 'org.hibernate.annotations.common.Version', 'getVersionString' )
@@ -113,3 +88,5 @@ spotless {
 }
 tasks.compileJava.dependsOn(spotlessApply)
 
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
