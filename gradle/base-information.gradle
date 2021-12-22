@@ -16,18 +16,18 @@ ext {
 	if ( project.hasProperty( 'releaseVersion' ) ) {
 		hcannVersion = new HibernateVersion( project.releaseVersion, project )
 	}
-
-	javaLanguageLevel = '1.8'
-
 }
 
 group = 'org.hibernate.common'
 version = project.hcannVersion.fullName
 
-targetCompatibility = project.javaLanguageLevel
-sourceCompatibility = project.javaLanguageLevel
-
 buildDir = "target"
+
+java {
+	toolchain {
+		languageVersion.set(JavaLanguageVersion.of(11))
+	}
+}
 
 class HibernateVersion {
 	final String fullName
