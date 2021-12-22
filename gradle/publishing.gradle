@@ -1,6 +1,5 @@
 
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 apply plugin: 'nu.studer.credentials'
 
 ext {
@@ -156,14 +155,6 @@ publishing {
         }
     }
 }
-
-signing {
-    sign publishing.publications.mavenJava
-}
-tasks.withType(Sign) {
-    onlyIf { ! project.hcannVersion.isSnapshot }
-}
-
 
 // OSGi manifest helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

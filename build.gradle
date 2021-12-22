@@ -13,11 +13,8 @@ buildscript {
 
 plugins {
     id 'java-library'
-
     id 'maven-publish'
-    id 'signing'
     id 'nu.studer.credentials' version '2.1'
-
     id 'idea'
     id 'eclipse'
 }
