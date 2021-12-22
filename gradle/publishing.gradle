@@ -58,11 +58,7 @@ jar {
                 'Implementation-Version': archiveVersion,
                 'Implementation-Vendor': 'Hibernate.org',
                 'Implementation-Vendor-Id': 'org.hibernate',
-
-                'Bundle-Vendor': 'Hibernate.org',
-
-                // Java 9 module name
-                'Automatic-Module-Name': 'org.hibernate.commons.annotations'
+                'Bundle-Vendor': 'Hibernate.org'
         )
 //
 //        // See https://discuss.gradle.org/t/balancing-deprecation-of-sourcesetoutput-classesdir-and-other-parts-of-gradle-that-only-accept-a-dir-file/25283
@@ -211,6 +207,9 @@ class OsgiManifestPackagingInfo {
     }
 
     private static String determinePackageName(SourceDirectorySet sourceDirectorySet, File javaFile) {
+        if (javaFile.name.equals("module-info.java")) {
+            return "";
+        }
         final javaFileAbsolutePath = javaFile.absolutePath;
         for ( File sourceDirectory : sourceDirectorySet.srcDirs ) {
             final String sourceDirectoryAbsolutePath = sourceDirectory.absolutePath;
