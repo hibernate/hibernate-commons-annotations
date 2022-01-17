@@ -36,6 +36,11 @@ public interface XClass extends XAnnotatedElement {
 	XClass getSuperclass();
 
 	/**
+	 * The containing class or package
+	 */
+	XAnnotatedElement getContainingElement();
+
+	/**
 	 * @see Class#getInterfaces()
 	 */
 	XClass[] getInterfaces();
