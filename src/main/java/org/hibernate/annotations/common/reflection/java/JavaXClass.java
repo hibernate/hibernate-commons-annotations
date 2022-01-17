@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.hibernate.annotations.common.reflection.Filter;
 import org.hibernate.annotations.common.reflection.ReflectionUtil;
+import org.hibernate.annotations.common.reflection.XAnnotatedElement;
 import org.hibernate.annotations.common.reflection.XClass;
 import org.hibernate.annotations.common.reflection.XMethod;
 import org.hibernate.annotations.common.reflection.XProperty;
@@ -46,6 +47,22 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
                         getFactory().getTypeEnvironment( toClass() )
 				)
 		);
+	}
+
+	@Override
+	public XAnnotatedElement getContainingElement() {
+		Class<?> enclosingClass = toClass().getEnclosingClass();
+		if ( enclosingClass != null ) {
+			return getFactory().toXClass( enclosingClass,
+					CompoundTypeEnvironment.create(
+							getTypeEnvironment(),
+							getFactory().getTypeEnvironment( toClass() )
+					)
+			);
+		}
+		else {
+			return getFactory().toXPackage( toClass().getPackage() );
+		}
 	}
 
 	public XClass[] getInterfaces() {
