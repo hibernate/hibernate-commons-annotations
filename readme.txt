@@ -15,10 +15,22 @@ Requirements
 ------------
 Since version 6.0 this project requires Java 11.
 
-Instructions
+Release Instructions
 ------------
 
-TODO: Do something here
+Ensure JIRA is up to date and reflecting the state of the branch being released.
+
+Edit the properties file named `gradle/version.properties` to define the version.
+
+Then run the publishing task:
+
+    ./gradlew publish -PhibernatePublishUsername=hibernate_org_ossrh -PhibernatePublishPassword=verySecretPassword
+
+Create a Tag and push it.
+
+Navigate to https://oss.sonatype.org/ to close and release the staged repository.
+
+Reset the `gradle/version.properties` to the next snapshot version for the current branch, push it as well.
 
 
 Contact
