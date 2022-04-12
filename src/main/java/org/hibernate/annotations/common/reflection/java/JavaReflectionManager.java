@@ -175,6 +175,37 @@ public final class JavaReflectionManager implements ReflectionManager, MetadataP
 		throw new IllegalArgumentException( "No PropertyTypeExtractor available for type void " );
 	}
 
+	@Override
+	public Type toType(XClass xClazz) {
+		if ( ! ( xClazz instanceof JavaXClass ) ) {
+			throw new IllegalArgumentException( "XClass not coming from this ReflectionManager implementation" );
+		}
+		final JavaXClass javaXClazz = (JavaXClass) xClazz;
+		final Class<?> clazz = javaXClazz.toClass();
+		final Type[] typeArguments = clazz.getTypeParameters();
+		if ( typeArguments.length == 0 ) {
+			return clazz;
+		}
+		return javaXClazz.getTypeEnvironment().bind(
+			new ParameterizedType() {
+				@Override
+				public Type[] getActualTypeArguments() {
+					return typeArguments;
+				}
+
+				@Override
+				public Type getRawType() {
+					return clazz;
+				}
+
+				@Override
+				public Type getOwnerType() {
+					return null;
+				}
+			}
+		);
+	}
+
 	public boolean equals(XClass class1, Class class2) {
 		if ( class1 == null ) {
 			return class2 == null;
