@@ -8,6 +8,7 @@ package org.hibernate.annotations.common.reflection;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 /**
@@ -22,6 +23,8 @@ public interface ReflectionManager {
 	public <T> XClass toXClass(Class<T> clazz);
 
 	public Class toClass(XClass xClazz);
+
+	public Type toType(XClass xClazz);
 
 	public Method toMethod(XMethod method);
 

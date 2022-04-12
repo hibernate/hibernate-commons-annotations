@@ -7,6 +7,8 @@
 package org.hibernate.annotations.common.test.reflection.java;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.hibernate.annotations.common.reflection.ReflectionManager;
@@ -86,6 +88,19 @@ public class JavaXClassTest extends XAnnotatedElementTestCase {
 	public void testCanBeAnEnum() {
 		assertFalse( fatherAsSeenFromSon.isEnum() );
 		assertTrue( factory.toXClass( Sex.class ).isEnum() );
+	}
+
+	public void testParameterizedType() {
+		Type type = factory.toType(
+			fatherAsSeenFromSon.getDeclaredProperties( "property" )
+				.stream()
+				.filter( p -> p.getName().equals( "genericCollectionProperty" ) )
+				.findFirst()
+				.get()
+				.getType()
+		);
+		assertTrue( type instanceof ParameterizedType );
+		assertEquals( String.class, ((ParameterizedType) type).getActualTypeArguments()[0] );
 	}
 
 	@Override
