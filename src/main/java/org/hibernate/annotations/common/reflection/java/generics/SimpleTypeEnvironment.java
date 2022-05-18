@@ -49,7 +49,7 @@ final class SimpleTypeEnvironment implements TypeEnvironment {
 			if ( areSame( originalArguments, boundArguments ) ) {
 				return parameterizedType;
 			}
-			return TypeFactory.createParameterizedType(
+			return new ParameterizedTypeImpl(
 					parameterizedType.getRawType(), boundArguments, parameterizedType.getOwnerType()
 			);
 		}
