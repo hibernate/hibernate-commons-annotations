@@ -10,8 +10,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.StringJoiner;
 
 /**
  * This class instances our own <code>ParameterizedTypes</code> and <code>GenericArrayTypes</code>.
@@ -22,122 +20,19 @@ import java.util.StringJoiner;
  */
 class TypeFactory {
 
-	static ParameterizedType createParameterizedType(
-			final Type rawType, final Type[] substTypeArgs,
-			final Type ownerType
-	) {
-		return new ParameterizedType() {
-
-			public Type[] getActualTypeArguments() {
-				return substTypeArgs;
-			}
-
-			public Type getRawType() {
-				return rawType;
-			}
-
-			public Type getOwnerType() {
-				return ownerType;
-			}
-
-			@Override
-			public boolean equals(Object obj) {
-				if ( !( obj instanceof ParameterizedType ) ) {
-					return false;
-				}
-				ParameterizedType other = (ParameterizedType) obj;
-				return Arrays.equals( getActualTypeArguments(), other.getActualTypeArguments() )
-						&& safeEquals( getRawType(), other.getRawType() ) && safeEquals(
-						getOwnerType(), other.getOwnerType()
-				);
-			}
-
-			@Override
-			public int hashCode() {
-				return safeHashCode( getActualTypeArguments() ) ^ safeHashCode( getRawType() ) ^ safeHashCode(
-						getOwnerType()
-				);
-			}
-
-			@Override
-			public String toString() {
-				final StringBuilder sb = new StringBuilder();
-				if ( ownerType != null ) {
-					sb.append( ownerType.getTypeName() );
-
-					sb.append( "$" );
-
-					if ( ownerType instanceof ParameterizedType ) {
-						// Find simple name of nested type by removing the
-						// shared prefix with owner.
-						sb.append(
-							rawType.getTypeName().replace(
-								( (ParameterizedType) ownerType ).getRawType().getTypeName() + "$",
-								""
-							)
-						);
-					} else if ( rawType instanceof Class<?> ) {
-						sb.append( ( (Class<?>) rawType ).getSimpleName() );
-					} else
-						sb.append( rawType.getTypeName() );
-				} else
-					sb.append( rawType.getTypeName() );
-
-				if ( substTypeArgs != null ) {
-					final StringJoiner sj = new StringJoiner( ", ", "<", ">" );
-					sj.setEmptyValue( "" );
-					for ( Type t : substTypeArgs ) {
-						sj.add( t.getTypeName() );
-					}
-					sb.append( sj );
-				}
-
-				return sb.toString();
-			}
-		};
+	static ParameterizedType createParameterizedType(Type rawType, Type[] substTypeArgs, Type ownerType) {
+		return new ParameterizedTypeImpl( rawType, substTypeArgs, ownerType );
 	}
 
 	static Type createArrayType(Type componentType) {
 		if ( componentType instanceof Class ) {
-			return Array.newInstance( (Class) componentType, 0 ).getClass();
+			return Array.newInstance( (Class<?>) componentType, 0 ).getClass();
 		}
-		return TypeFactory.createGenericArrayType( componentType );
+		return createGenericArrayType( componentType );
 	}
 
-	private static GenericArrayType createGenericArrayType(final Type componentType) {
-		return new GenericArrayType() {
-
-			public Type getGenericComponentType() {
-				return componentType;
-			}
-
-			@Override
-			public boolean equals(Object obj) {
-				if ( !( obj instanceof GenericArrayType ) ) {
-					return false;
-				}
-				GenericArrayType other = (GenericArrayType) obj;
-				return safeEquals( getGenericComponentType(), other.getGenericComponentType() );
-			}
-
-			@Override
-			public int hashCode() {
-				return safeHashCode( getGenericComponentType() );
-			}
-		};
+	private static GenericArrayType createGenericArrayType(Type componentType) {
+		return new GenericArrayTypeImpl( componentType );
 	}
 
-	private static boolean safeEquals(Type t1, Type t2) {
-		if ( t1 == null ) {
-			return t2 == null;
-		}
-		return t1.equals( t2 );
-	}
-
-	private static int safeHashCode(Object o) {
-		if ( o == null ) {
-			return 1;
-		}
-		return o.hashCode();
-	}
 }

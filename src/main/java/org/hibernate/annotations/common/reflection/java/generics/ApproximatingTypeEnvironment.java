@@ -93,7 +93,7 @@ final class ApproximatingTypeEnvironment implements TypeEnvironment {
 					approximatedTypeArguments[i] = coarseApproximation( typeArguments[i] );
 				}
 
-				return TypeFactory.createParameterizedType(
+				return new ParameterizedTypeImpl(
 						bind( parameterizedType.getRawType() ),
 						approximatedTypeArguments,
 						parameterizedType.getOwnerType()
