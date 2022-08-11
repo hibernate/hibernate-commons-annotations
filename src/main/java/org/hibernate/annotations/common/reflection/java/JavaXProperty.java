@@ -21,6 +21,19 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
 final class JavaXProperty extends JavaXMember implements XProperty {
 
 	private static final Object[] EMPTY_ARRAY = new Object[0];
+	private static final Class<?> RECORD_CLASS;
+
+	static {
+		Class<?> recordClass = null;
+
+		try {
+			recordClass = Class.forName( "java.lang.Record" );
+		}
+		catch (Exception e) {
+			// Ignore
+		}
+		RECORD_CLASS = recordClass;
+	}
 
 	static JavaXProperty create(Member member, final TypeEnvironment context, final JavaReflectionManager factory) {
 		final Type propType = typeOf( member, context );
@@ -42,7 +55,11 @@ final class JavaXProperty extends JavaXMember implements XProperty {
 			if ( fullName.startsWith( "is" ) ) {
 				return decapitalize( fullName.substring( "is".length() ) );
 			}
-			throw new RuntimeException( "Method " + fullName + " is not a property getter" );
+			// If the declaring class is a record, we return the record component name as property name
+			if ( RECORD_CLASS == null || !RECORD_CLASS.isAssignableFrom( getMember().getDeclaringClass() ) ) {
+				throw new RuntimeException( "Method " + fullName + " is not a property getter" );
+			}
+			return fullName;
 		}
 		else {
 			return fullName;
