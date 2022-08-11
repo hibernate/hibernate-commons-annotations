@@ -27,6 +27,29 @@ import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment
  */
 final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 
+	private static final Class<?> RECORD_CLASS;
+	private static final Method GET_RECORD_COMPONENTS;
+	private static final Method GET_ACCESSOR;
+
+	static {
+		Class<?> recordClass = null;
+		Method getRecordComponents = null;
+		Method getAccessor = null;
+
+		try {
+			recordClass = Class.forName( "java.lang.Record" );
+			getRecordComponents = Class.class.getMethod( "getRecordComponents" );
+			final Class<?> recordComponentClass = Class.forName( "java.lang.reflect.RecordComponent" );
+			getAccessor = recordComponentClass.getMethod( "getAccessor" );
+		}
+		catch (Exception e) {
+			// Ignore
+		}
+		RECORD_CLASS = recordClass;
+		GET_RECORD_COMPONENTS = getRecordComponents;
+		GET_ACCESSOR = getAccessor;
+	}
+
 	private final TypeEnvironment context;
     private final Class clazz;
 
@@ -121,6 +144,25 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 		return result;
 	}
 
+	private List<XProperty> getDeclaredComponentProperties(Filter filter) {
+		ArrayList<XProperty> result = new ArrayList<XProperty>();
+		Class<?> javaClass = toClass();
+		if ( RECORD_CLASS == null || !RECORD_CLASS.isAssignableFrom( javaClass ) ) {
+			return result;
+		}
+		try {
+			Object[] declaredComponents = (Object[]) GET_RECORD_COMPONENTS.invoke(javaClass);
+			for ( Object component : declaredComponents ) {
+				Method accessor = (Method) GET_ACCESSOR.invoke(component );
+				result.add( getFactory().getXProperty( accessor, getTypeEnvironment() ) );
+			}
+		} catch (Exception e) {
+			throw new RuntimeException( "Could not access record components", e );
+		}
+		result.trimToSize();
+		return result;
+	}
+
 	public List<XProperty> getDeclaredProperties(String accessType) {
 		return getDeclaredProperties( accessType, XClass.DEFAULT_FILTER );
 	}
@@ -131,6 +173,9 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 		}
 		if ( accessType.equals( ACCESS_PROPERTY ) ) {
 			return getDeclaredMethodProperties( filter );
+		}
+		if ( accessType.equals( ACCESS_COMPONENT ) ) {
+			return getDeclaredComponentProperties( filter );
 		}
 		throw new IllegalArgumentException( "Unknown access type " + accessType );
 	}
