@@ -53,3 +53,48 @@ tasks.compileJava.dependsOn(spotlessApply)
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
+
+if ( JavaVersion.current().isCompatibleWith( JavaVersion.VERSION_17 ) ) {
+    // If we run with a JDK17+, we set the toolchain to 17
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
+    }
+
+    // And we add a new source set, which contains tests that can run on JDK17+
+    sourceSets {
+        java17 {
+            java {
+                srcDirs = ['src/test/java17']
+            }
+        }
+    }
+
+    // For the new source set, we need to configure the source and target version to 17
+    compileJava17Java {
+        sourceCompatibility = 17
+        targetCompatibility = 17
+    }
+
+    // The source set gets a custom configuration which extends the normal test implementation config
+    configurations {
+        java17Implementation.extendsFrom(testImplementation)
+    }
+
+    // Add the output from src/main/java as dependency
+    dependencies {
+        java17Implementation files(sourceSets.main.output.classesDirs) {
+            builtBy compileJava
+        }
+    }
+
+    // We execute the Java 17 tests in a custom test task
+    task java17Test(type: Test) {
+        testClassesDirs = sourceSets.java17.output.classesDirs
+        classpath = sourceSets.java17.runtimeClasspath
+    }
+
+    // And run this as part of the check task by default
+    check.dependsOn java17Test
+}
