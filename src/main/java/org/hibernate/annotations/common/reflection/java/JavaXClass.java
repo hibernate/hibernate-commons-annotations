@@ -174,7 +174,7 @@ final class JavaXClass extends JavaXAnnotatedElement implements XClass {
 		if ( accessType.equals( ACCESS_PROPERTY ) ) {
 			return getDeclaredMethodProperties( filter );
 		}
-		if ( accessType.equals( ACCESS_COMPONENT ) ) {
+		if ( accessType.equals( ACCESS_RECORD ) ) {
 			return getDeclaredComponentProperties( filter );
 		}
 		throw new IllegalArgumentException( "Unknown access type " + accessType );

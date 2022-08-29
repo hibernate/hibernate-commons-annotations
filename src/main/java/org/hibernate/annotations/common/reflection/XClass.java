@@ -16,7 +16,7 @@ public interface XClass extends XAnnotatedElement {
 
 	public static final String ACCESS_PROPERTY = "property";
 	public static final String ACCESS_FIELD = "field";
-	public static final String ACCESS_COMPONENT = "component";
+	public static final String ACCESS_RECORD = "record";
 
 	static final Filter DEFAULT_FILTER = new Filter() {
 
