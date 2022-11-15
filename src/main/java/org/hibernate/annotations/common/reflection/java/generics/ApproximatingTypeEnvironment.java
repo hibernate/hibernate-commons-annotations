@@ -135,9 +135,6 @@ final class ApproximatingTypeEnvironment implements TypeEnvironment {
 			}
 
 			private Type approximateTo(Type[] bounds) {
-				if ( bounds.length != 1 ) {
-					return Object.class;
-				}
 				return coarseApproximation( bounds[0] );
 			}
 
