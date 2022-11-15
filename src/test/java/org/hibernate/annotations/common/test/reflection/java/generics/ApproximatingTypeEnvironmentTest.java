@@ -72,4 +72,22 @@ public class ApproximatingTypeEnvironmentTest extends TestCase {
 		assertEquals( Object.class, approxType.getActualTypeArguments()[0] );
 		assertEquals( Collection.class, approxType.getActualTypeArguments()[1] );
 	}
+
+	public void testMultipleBoundWithClass() throws Exception {
+		Type type = MultipleBoundWithClass.class.getMethod( "getGenericType", new Class[0] ).getGenericReturnType();
+		Type bind = approximatingUnboundContext.bind( type );
+		assertEquals( String.class.getName(), bind.getTypeName() );
+	}
+
+	 public void testMultipleBoundMultipleBoundWithMultipleInterfaces() throws Exception {
+		Type type = MultipleBoundWithMultipleInterfaces.class.getMethod( "getGenericType", new Class[0] ).getGenericReturnType();
+		Type bind = approximatingUnboundContext.bind( type );
+		assertEquals( MultipleBoundWithMultipleInterfaces.Bound.class.getName(), bind.getTypeName() );
+	}
+
+	public void testUnboundGeneric() throws Exception {
+		Type type = UnboundGeneric.class.getMethod( "getGenericType", new Class[0] ).getGenericReturnType();
+		Type bind = approximatingUnboundContext.bind( type );
+		assertEquals( Object.class.getName(), bind.getTypeName() );
+	}
 }
