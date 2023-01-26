@@ -90,4 +90,10 @@ public class ApproximatingTypeEnvironmentTest extends TestCase {
 		Type bind = approximatingUnboundContext.bind( type );
 		assertEquals( Object.class.getName(), bind.getTypeName() );
 	}
+
+	public void testCircularGeneric() throws Exception {
+		Type type = CircularGeneric.class.getMethod( "getGenericType", new Class[0] ).getGenericReturnType();
+		Type bind = approximatingUnboundContext.bind( type );
+		assertEquals( CircularGeneric.class.getName(), bind.getTypeName() );
+	}
 }

@@ -126,7 +126,7 @@ final class ApproximatingTypeEnvironment implements TypeEnvironment {
 				if ( TypeUtils.isResolved( parameterizedType ) ) {
 					return parameterizedType;
 				}
-				return Object.class;
+				return parameterizedType.getRawType();
 			}
 
 			@Override
