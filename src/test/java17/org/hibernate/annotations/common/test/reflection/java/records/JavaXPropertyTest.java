@@ -28,7 +28,7 @@ public class JavaXPropertyTest extends TestCase {
 		List<String> properties = new LinkedList<String>();
 		properties.add( "id" );
 		properties.add( "name" );
-		List<XProperty> methodProperties = recordXclass.getDeclaredProperties( "component" );
+		List<XProperty> methodProperties = recordXclass.getDeclaredProperties( XClass.ACCESS_RECORD );
 		assertEquals( properties.size(), methodProperties.size() );
 		for ( XProperty member : methodProperties ) {
 			assertTrue( properties.contains( member.getName() ) );
