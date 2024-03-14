@@ -10,7 +10,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
 import org.hibernate.annotations.common.reflection.XProperty;
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment;
 
@@ -91,31 +90,7 @@ final class JavaXProperty extends JavaXMember implements XProperty {
 				return ( (Method) getMember() ).invoke( target, EMPTY_ARRAY );
 			}
 			else {
-				Field field = (Field) getMember();
-				// This is needed because until JDK 9 the Reflection API
-				// does not use the same caching as used for auto-boxing.
-				// See https://bugs.openjdk.java.net/browse/JDK-5043030 for details.
-				// The code below can be removed when we move to JDK 9.
-				// double and float are intentionally not handled here because
-				// the JLS § 5.1.7 does not define caching for boxed values of
-				// this types.
-				Class<?> type = field.getType();
-				if ( type.isPrimitive() ) {
-					if ( type == Boolean.TYPE ) {
-						return Boolean.valueOf( field.getBoolean( target ) );
-					} else if ( type == Byte.TYPE ) {
-						return Byte.valueOf( field.getByte( target ) );
-					} else if ( type == Character.TYPE ) {
-						return Character.valueOf( field.getChar( target ) );
-					} else if ( type == Integer.TYPE ) {
-						return Integer.valueOf( field.getInt( target ) );
-					} else if ( type == Long.TYPE ) {
-						return Long.valueOf( field.getLong( target ) );
-					} else if ( type == Short.TYPE ) {
-						return Short.valueOf( field.getShort( target ) );
-					}
-				}
-				return field.get( target );
+				return ( (Field) getMember() ).get( target );
 			}
 		}
 		catch (NullPointerException e) {
