@@ -1,11 +1,7 @@
 /*
- * Hibernate, Relational Persistence for Idiomatic Java
- *
- * License: GNU Lesser General Public License (LGPL), version 2.1 or later.
- * See the lgpl.txt file in the root directory or <http://www.gnu.org/licenses/lgpl-2.1.html>.
+ * SPDX-License-Identifier: Apache-2.0
+ * Copyright: Red Hat Inc. and Hibernate Authors
  */
-
-// $Id$
 package org.hibernate.annotations.common.reflection.java;
 
 import java.lang.reflect.ParameterizedType;
@@ -13,7 +9,6 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 import java.util.SortedMap;
-
 import org.hibernate.annotations.common.reflection.XClass;
 import org.hibernate.annotations.common.reflection.java.generics.TypeEnvironment;
 import org.hibernate.annotations.common.reflection.java.generics.TypeSwitch;

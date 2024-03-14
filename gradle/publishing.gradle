@@ -1,4 +1,3 @@
-
 apply plugin: 'maven-publish'
 apply plugin: 'nu.studer.credentials'
 
@@ -102,9 +101,9 @@ publishing {
 
                 licenses {
                     license {
-                        name = 'GNU Library General Public License v2.1 or later'
-                        url = 'http://www.opensource.org/licenses/LGPL-2.1'
-                        comments = 'See discussion at http://hibernate.org/community/license/ for more details.'
+                        name = 'Apache License Version 2.0'
+                        url = 'https://opensource.org/licenses/Apache-2.0'
+                        comments = 'See http://hibernate.org/community/license/ for more details.'
                         distribution = 'repo'
                     }
                 }

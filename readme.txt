@@ -60,4 +60,5 @@ Notes
 If you want to contribute, go to http://www.hibernate.org/
 
 This software and its documentation are distributed under the terms of the
-GNU Lesser General Public License v2.1 or later (see lgpl.txt).
+Apache License Version 2.0.
+N.B. older versions of this library used a different license: LGPL 2.1.
