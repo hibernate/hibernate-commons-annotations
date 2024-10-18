@@ -29,6 +29,15 @@ if (currentBuild.getBuildCauses().toString().contains('BranchIndexingCause')) {
 	return
 }
 
+def manualRelease = currentBuild.getBuildCauses().toString().contains( 'UserIdCause' )
+
+// Avoid running the pipeline on push
+if ( !manualRelease ) {
+	print "INFO: Build skipped because automated releases are disabled."
+	currentBuild.result = 'NOT_BUILT'
+	return
+}
+
 // --------------------------------------------
 // Reusable methods
 
