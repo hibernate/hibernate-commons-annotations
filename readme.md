@@ -20,18 +20,9 @@ Release Instructions
 
 Ensure JIRA is up to date and reflecting the state of the branch being released.
 
-Edit the properties file named `gradle/version.properties` to define the version.
-
-Then run the publishing task:
-
-    ./gradlew publish -PhibernatePublishUsername=hibernate_org_ossrh -PhibernatePublishPassword=verySecretPassword
-
-Create a Tag and push it.
+Then start the release job on CI at https://ci.hibernate.org/view/Release/job/hibernate-commons-annotations-release/
 
 Navigate to https://oss.sonatype.org/ to close and release the staged repository.
-
-Reset the `gradle/version.properties` to the next snapshot version for the current branch, push it as well.
-
 
 Contact
 ------------

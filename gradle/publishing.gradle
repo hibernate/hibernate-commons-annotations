@@ -2,18 +2,11 @@ apply plugin: 'maven-publish'
 apply plugin: 'nu.studer.credentials'
 
 ext {
-    if ( project.hasProperty( 'hibernatePublishUsername' ) ) {
-        credentials.hibernatePublishUsername = project.property( 'hibernatePublishUsername' )
+    if ( System.getenv( 'OSSRH_USER' ) ) {
+        credentials.ossrhUsername = System.getenv( 'OSSRH_USER' )
     }
-    if ( project.hasProperty( 'hibernatePublishPassword' ) ) {
-        credentials.hibernatePublishPassword = project.property( 'hibernatePublishPassword' )
-    }
-
-    if ( project.hasProperty( 'hibernateSnapshotsUsername' ) ) {
-        credentials.hibernateSnapshotsUsername = project.property( 'hibernateSnapshotsUsername' )
-    }
-    if ( project.hasProperty( 'hibernateSnapshotsPassword' ) ) {
-        credentials.hibernateSnapshotsPassword = project.property( 'hibernateSnapshotsPassword' )
+    if ( System.getenv( 'OSSRH_PASSWORD' ) ) {
+        credentials.ossrhPassword = System.getenv( 'OSSRH_PASSWORD' )
     }
 
     gradle.taskGraph.addTaskExecutionGraphListener(
@@ -24,7 +17,7 @@ ext {
                         if ( ! project.hcannVersion.isSnapshot ) {
                             throw new GradleException("Cannot publish non-snapshot version to snapshot repository");
                         }
-                        if ( project.credentials.hibernateSnapshotsUsername == null ) {
+                        if ( project.credentials.ossrhUsername == null ) {
                             throw new GradleException("Snapshot publishing credentials not specified");
                         }
                     }
@@ -33,7 +26,7 @@ ext {
                         if ( project.hcannVersion.isSnapshot ) {
                             throw new GradleException("Cannot publish snapshot version to non-snapshot repository");
                         }
-                        if (project.credentials.hibernatePublishUsername == null) {
+                        if (project.credentials.ossrhUsername == null) {
                             throw new GradleException("Publishing credentials not specified");
                         }
                     }
@@ -136,20 +129,15 @@ publishing {
             if ( project.hcannVersion.isSnapshot ) {
                 name 'snapshots'
                 url 'https://oss.sonatype.org/content/repositories/snapshots/'
-
-                credentials {
-                    username project.credentials.hibernateSnapshotsUsername
-                    password project.credentials.hibernateSnapshotsPassword
-                }
             }
             else {
                 name 'ossrh'
                 url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            }
 
-                credentials {
-                    username project.credentials.hibernatePublishUsername
-                    password project.credentials.hibernatePublishPassword
-                }
+            credentials {
+                username project.credentials.ossrhUsername
+                password project.credentials.ossrhPassword
             }
         }
     }
