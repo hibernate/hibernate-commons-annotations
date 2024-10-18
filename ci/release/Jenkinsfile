@@ -144,14 +144,19 @@ pipeline {
 				script {
 					checkoutReleaseScripts()
 
-					withCredentials([
-							usernamePassword(credentialsId: 'ossrh.sonatype.org', passwordVariable: 'OSSRH_PASSWORD', usernameVariable: 'OSSRH_USER'),
+					configFileProvider([
+							configFile(fileId: 'release.config.ssh', targetLocation: "${env.HOME}/.ssh/config"),
+							configFile(fileId: 'release.config.ssh.knownhosts', targetLocation: "${env.HOME}/.ssh/known_hosts")
 					]) {
-						sshagent(['ed25519.Hibernate-CI.github.com']) {
-							// perform documentation upload and Sonatype release
-							// change the version to the development version
-							// push to github
-							sh ".release/scripts/publish.sh ${env.SCRIPT_OPTIONS} ${env.PROJECT} ${env.RELEASE_VERSION} ${env.DEVELOPMENT_VERSION} ${env.GIT_BRANCH}"
+						withCredentials([
+								usernamePassword(credentialsId: 'ossrh.sonatype.org', passwordVariable: 'OSSRH_PASSWORD', usernameVariable: 'OSSRH_USER'),
+						]) {
+							sshagent(['ed25519.Hibernate-CI.github.com']) {
+								// perform documentation upload and Sonatype release
+								// change the version to the development version
+								// push to github
+								sh ".release/scripts/publish.sh ${env.SCRIPT_OPTIONS} ${env.PROJECT} ${env.RELEASE_VERSION} ${env.DEVELOPMENT_VERSION} ${env.GIT_BRANCH}"
+							}
 						}
 					}
 				}
