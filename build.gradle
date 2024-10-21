@@ -52,6 +52,17 @@ tasks.compileJava.dependsOn(spotlessApply)
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
+// Main binaries use a Java 11 baseline
+compileJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
+// ... and we want to test against that
+compileTestJava {
+    sourceCompatibility = 11
+    targetCompatibility = 11
+}
+
 if ( JavaVersion.current().isCompatibleWith( JavaVersion.VERSION_17 ) ) {
     // If we run with a JDK17+, we set the toolchain to 17
     java {
