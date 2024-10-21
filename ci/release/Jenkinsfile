@@ -57,7 +57,7 @@ pipeline {
 		label 'Release'
 	}
 	tools {
-		jdk 'OpenJDK 11 Latest'
+		jdk 'OpenJDK 17 Latest'
 	}
 	options {
 		buildDiscarder logRotator(daysToKeepStr: '30', numToKeepStr: '10')

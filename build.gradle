@@ -63,49 +63,50 @@ compileTestJava {
     targetCompatibility = 11
 }
 
-if ( JavaVersion.current().isCompatibleWith( JavaVersion.VERSION_17 ) ) {
-    // If we run with a JDK17+, we set the toolchain to 17
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(17))
-        }
-    }
-
-    // And we add a new source set, which contains tests that can run on JDK17+
-    sourceSets {
-        testJava17 {
-            java {
-                srcDirs = ['src/test/java17']
-            }
-        }
-    }
-
-    // For the new source set, we need to configure the source and target version to 17
-    compileTestJava17Java {
-        sourceCompatibility = 17
-        targetCompatibility = 17
-    }
-
-    // The source set gets a custom configuration which extends the normal test implementation config
-    configurations {
-        testJava17Implementation.extendsFrom(testImplementation, testRuntimeOnly)
-        testJava17CompileOnly.extendsFrom(testCompileOnly)
-    }
-
-    // Add the output from src/main/java as dependency
-    dependencies {
-        testJava17Implementation files(sourceSets.main.output.classesDirs) {
-            builtBy compileJava
-        }
-    }
-
-    // We execute the Java 17 tests in a custom test task
-    task testJava17(type: Test) {
-        testClassesDirs = sourceSets.testJava17.output.classesDirs
-        classpath = sourceSets.testJava17.runtimeClasspath
-    }
-
-    testClasses.dependsOn compileTestJava17Java
-    // And run this as part of the check task by default
-    check.dependsOn testJava17
+// Some tests require Java 17
+if ( !JavaVersion.current().isCompatibleWith( JavaVersion.VERSION_17 ) ) {
+    throw new IllegalStateException("Building this project requires JDK 17 (produced binaries will still target Java 11).")
 }
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
+}
+
+// We add a new source set, which contains tests that can run on JDK17+
+sourceSets {
+    testJava17 {
+        java {
+            srcDirs = ['src/test/java17']
+        }
+    }
+}
+
+// For the new source set, we need to configure the source and target version to 17
+compileTestJava17Java {
+    sourceCompatibility = 17
+    targetCompatibility = 17
+}
+
+// The source set gets a custom configuration which extends the normal test implementation config
+configurations {
+    testJava17Implementation.extendsFrom(testImplementation, testRuntimeOnly)
+    testJava17CompileOnly.extendsFrom(testCompileOnly)
+}
+
+// Add the output from src/main/java as dependency
+dependencies {
+    testJava17Implementation files(sourceSets.main.output.classesDirs) {
+        builtBy compileJava
+    }
+}
+
+// We execute the Java 17 tests in a custom test task
+task testJava17(type: Test) {
+    testClassesDirs = sourceSets.testJava17.output.classesDirs
+    classpath = sourceSets.testJava17.runtimeClasspath
+}
+
+testClasses.dependsOn compileTestJava17Java
+// And run this as part of the check task by default
+check.dependsOn testJava17
