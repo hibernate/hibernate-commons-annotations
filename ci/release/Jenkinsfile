@@ -7,7 +7,7 @@
 /*
  * See https://github.com/hibernate/hibernate-jenkins-pipeline-helpers
  */
-@Library('hibernate-jenkins-pipeline-helpers@1.17') _
+@Library('hibernate-jenkins-pipeline-helpers') _
 
 import org.hibernate.jenkins.pipeline.helpers.version.Version
 
@@ -124,6 +124,7 @@ pipeline {
 					env.RELEASE_VERSION = releaseVersion.toString()
 					env.DEVELOPMENT_VERSION = developmentVersion.toString()
 					env.SCRIPT_OPTIONS = params.RELEASE_DRY_RUN ? "-d" : ""
+					env.JRELEASER_DRY_RUN = params.RELEASE_DRY_RUN
 				}
 			}
 		}
@@ -135,7 +136,7 @@ pipeline {
 					// set release version
 					// update changelog from JIRA
 					// tag the version
-					sh ".release/scripts/prepare-release.sh ${env.PROJECT} ${env.RELEASE_VERSION}"
+					sh ".release/scripts/prepare-release.sh -j -b ${env.GIT_BRANCH} -v ${env.DEVELOPMENT_VERSION} ${env.PROJECT} ${env.RELEASE_VERSION}"
 				}
 			}
 		}
@@ -149,13 +150,17 @@ pipeline {
 							configFile(fileId: 'release.config.ssh.knownhosts', targetLocation: "${env.HOME}/.ssh/known_hosts")
 					]) {
 						withCredentials([
-								usernamePassword(credentialsId: 'ossrh.sonatype.org', passwordVariable: 'OSSRH_PASSWORD', usernameVariable: 'OSSRH_USER'),
+								usernamePassword(credentialsId: 'central.sonatype.com', passwordVariable: 'JRELEASER_MAVENCENTRAL_TOKEN', usernameVariable: 'JRELEASER_MAVENCENTRAL_USERNAME'),
+								file(credentialsId: 'release.gpg.private-key', variable: 'SIGNING_GPG_PRIVATE_KEY_PATH'),
+								string(credentialsId: 'release.gpg.passphrase', variable: 'JRELEASER_GPG_PASSPHRASE'),
+								string(credentialsId: 'Hibernate-CI.github.com', variable: 'JRELEASER_GITHUB_TOKEN')
+
 						]) {
 							sshagent(['ed25519.Hibernate-CI.github.com']) {
 								// perform documentation upload and Sonatype release
 								// change the version to the development version
 								// push to github
-								sh ".release/scripts/publish.sh ${env.SCRIPT_OPTIONS} ${env.PROJECT} ${env.RELEASE_VERSION} ${env.DEVELOPMENT_VERSION} ${env.GIT_BRANCH}"
+								sh ".release/scripts/publish.sh -j ${env.SCRIPT_OPTIONS} ${env.PROJECT} ${env.RELEASE_VERSION} ${env.DEVELOPMENT_VERSION} ${env.GIT_BRANCH}"
 							}
 						}
 					}
