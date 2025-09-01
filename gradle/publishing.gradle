@@ -209,10 +209,10 @@ class OsgiManifestPackagingInfo {
 
     def applyTo(def manifest) {
         if ( exportPackageInstructions.length > 0 ) {
-            manifest.attributes( 'Export-Package': exportPackageInstructions )
+            manifest.attributes( 'Export-Package': String.join(",", exportPackageInstructions) )
         }
         if ( privatePackageInstructions.length > 0 ) {
-            manifest.attribute( 'Private-Package', privatePackageInstructions )
+            manifest.attributes( 'Private-Package': String.join(",", privatePackageInstructions) )
         }
     }
 }
