@@ -1,40 +1,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'nu.studer.credentials'
 
-ext {
-    if ( System.getenv( 'OSSRH_USER' ) ) {
-        credentials.ossrhUsername = System.getenv( 'OSSRH_USER' )
-    }
-    if ( System.getenv( 'OSSRH_PASSWORD' ) ) {
-        credentials.ossrhPassword = System.getenv( 'OSSRH_PASSWORD' )
-    }
-
-    gradle.taskGraph.addTaskExecutionGraphListener(
-            new TaskExecutionGraphListener() {
-                @Override
-                void graphPopulated(TaskExecutionGraph graph) {
-                    if ( graph.hasTask( 'publishMavenJavaPublicationToSnapshotRepository' ) ) {
-                        if ( ! project.hcannVersion.isSnapshot ) {
-                            throw new GradleException("Cannot publish non-snapshot version to snapshot repository");
-                        }
-                        if ( project.credentials.ossrhUsername == null ) {
-                            throw new GradleException("Snapshot publishing credentials not specified");
-                        }
-                    }
-
-                    if (graph.hasTask('publishMavenJavaPublicationToOssrhRepository')) {
-                        if ( project.hcannVersion.isSnapshot ) {
-                            throw new GradleException("Cannot publish snapshot version to non-snapshot repository");
-                        }
-                        if (project.credentials.ossrhUsername == null) {
-                            throw new GradleException("Publishing credentials not specified");
-                        }
-                    }
-                }
-            }
-    )
-}
-
 java {
     withJavadocJar()
     withSourcesJar()
@@ -126,19 +92,8 @@ publishing {
 
     repositories {
         maven {
-            if ( project.hcannVersion.isSnapshot ) {
-                name 'snapshots'
-                url 'https://oss.sonatype.org/content/repositories/snapshots/'
-            }
-            else {
-                name 'ossrh'
-                url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            }
-
-            credentials {
-                username project.credentials.ossrhUsername
-                password project.credentials.ossrhPassword
-            }
+            name = 'staging'
+            url = rootProject.layout.buildDirectory.dir("staging-deploy${File.separator}maven")
         }
     }
 }

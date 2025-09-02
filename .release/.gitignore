@@ -1,2 +1,3 @@
-# This is the folder into which we check out our release scripts
+# The folder into which we checkout our release scripts into
 *
+!.gitignore
